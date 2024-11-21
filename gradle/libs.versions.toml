@@ -1,0 +1,8 @@
+[versions]
+quarkus = "3.16.4"
+
+[libraries]
+quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+
+[plugins]
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }
