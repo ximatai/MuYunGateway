@@ -52,9 +52,9 @@ public class FrontendRoute extends BaseRoute implements Handler<RoutingContext> 
 
     public String reroutePath() {
         if (notFoundReroute.startsWith("/")) {
-            return burgerPath(path) + notFoundReroute.substring(1);
+            return getPath() + notFoundReroute.substring(1);
         } else {
-            return burgerPath(path) + notFoundReroute;
+            return getPath() + notFoundReroute;
         }
     }
 

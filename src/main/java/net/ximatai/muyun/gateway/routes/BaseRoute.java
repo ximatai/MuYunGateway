@@ -24,7 +24,7 @@ public abstract class BaseRoute implements Handler<RoutingContext> {
             throw new IllegalArgumentException("path is blank");
         }
 
-        return burgerPath(path) + "*";
+        return burgerPath(path);
     }
 
     public boolean isProtect() {
@@ -43,12 +43,12 @@ public abstract class BaseRoute implements Handler<RoutingContext> {
         return noStoreList;
     }
 
-    public void mount(Router router,Handler<RoutingContext> ...handler) {
+    public void mount(Router router, Handler<RoutingContext>... handler) {
         Route route;
         if (isRegex) {
             route = router.routeWithRegex(path);
         } else {
-            route = router.route(getPath());
+            route = router.route(getPath() + "*");
         }
         for (Handler<RoutingContext> routingContextHandler : handler) {
             route.handler(routingContextHandler);

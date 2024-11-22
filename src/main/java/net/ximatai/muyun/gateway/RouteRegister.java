@@ -38,14 +38,15 @@ public class RouteRegister {
     private void notFoundHandler(RoutingContext routingContext) {
         HttpServerRequest request = routingContext.request();
         HttpServerResponse response = routingContext.response();
-
+        String path = request.path();
         boolean hit = false;
 
         for (BaseRoute route : routes) {
             if (route instanceof FrontendRoute frontendRoute) {
-                if (frontendRoute.isNotFoundReroute()) {
+
+                if (frontendRoute.isNotFoundReroute() && path.startsWith(frontendRoute.getPath())) {
                     String reroutePath = frontendRoute.reroutePath();
-                    if (!request.path().equals(reroutePath)) {
+                    if (!path.equals(reroutePath)) {
                         hit = true;
                         routingContext.put(IS_REROUTE, true);  //标记request 被 reroute
                         routingContext.put(REROUTE_REASON, "frontend_router");
