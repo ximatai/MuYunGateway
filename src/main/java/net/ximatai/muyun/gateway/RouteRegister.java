@@ -24,7 +24,7 @@ public class RouteRegister {
 
     void init(@Observes StartupEvent startupEvent, Router router) {
         routes.forEach(route -> {
-            router.route(route.getPath()).handler(web);
+            route.mount(router);
         });
 
         router.errorHandler(404, this::notFoundHandler);
@@ -57,6 +57,7 @@ public class RouteRegister {
         }
 
         if (!hit) {
+//            routingContext.next();
             response
                     .setStatusCode(404)
                     .putHeader("Context-type", "text/plain")

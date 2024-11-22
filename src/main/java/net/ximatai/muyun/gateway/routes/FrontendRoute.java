@@ -1,6 +1,7 @@
 package net.ximatai.muyun.gateway.routes;
 
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -59,6 +60,7 @@ public class FrontendRoute extends BaseRoute implements Handler<RoutingContext> 
 
     @Override
     public void handle(RoutingContext routingContext) {
+        routingContext.response().headers().remove(HttpHeaders.CONTENT_ENCODING);
         getStaticHandler().handle(routingContext);
     }
 }

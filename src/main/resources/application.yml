@@ -1,16 +1,37 @@
-frontends:
-  - path: web
-    dir: /Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot
-    notFoundReroute: /
-    protect: true
-    regex: false
-    comment:
-    noStore:
-      - "/"
-      - "/index.html"
-    whiteList:
-      - ".*\\..*"
-      - "/login"
+gateway:
+  index: /
+  ssl:
+    use: false
+    cert_path:
+    key_path:
+  login:
+    page: /web/login
+    api:
+  jwt:
+    use: false
+    check-expiration: false
+    expires-min:
+  session:
+    use: false
+    timeout-hour:
+  redirects:
+    - from: /
+      to: /web/
+  white-referer:
+    - login
+  frontends:
+    - path: web
+      dir: /Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot
+      notFoundReroute: /
+      protect: true
+      regex: false
+      comment:
+      noStore:
+        - "/"
+        - "/index.html"
+      whiteList:
+        - ".*\\..*"
+        - "/login"
 quarkus:
   http:
     port: 8888
