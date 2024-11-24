@@ -1,11 +1,9 @@
 package net.ximatai.muyun.gateway;
 
-import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import jakarta.enterprise.event.Observes;
 import net.ximatai.muyun.gateway.routes.BaseRoute;
 import net.ximatai.muyun.gateway.routes.FrontendRoute;
 
@@ -22,7 +20,7 @@ public class RouteRegister {
 
     List<BaseRoute> routes = List.of(web);
 
-    void init(@Observes StartupEvent startupEvent, Router router) {
+    public RouteRegister(Router router) {
         routes.forEach(route -> {
             route.mount(router);
         });
