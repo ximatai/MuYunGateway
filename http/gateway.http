@@ -1,0 +1,58 @@
+GET http://localhost:8888/api/config
+Accept: application/json
+
+###
+POST http://localhost:8888/api/config
+Content-Type: application/json
+
+{
+  "port": 7070,
+  "index": "/",
+  "ssl": {
+    "use": false,
+    "certPath": null,
+    "keyPath": null
+  },
+  "login": {
+    "page": "/web/login",
+    "api": null
+  },
+  "jwt": {
+    "use": false,
+    "checkExpiration": false,
+    "expiresMin": null
+  },
+  "session": {
+    "use": false,
+    "timeoutHour": null
+  },
+  "redirects": [
+    {
+      "from": "/",
+      "to": "/web/"
+    }
+  ],
+  "whiteReferer": [
+    "login"
+  ],
+  "frontends": [
+    {
+      "path": "web",
+      "dir": "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot",
+      "notFoundReroute": "/",
+      "protect": true,
+      "regex": false,
+      "comment": null,
+      "noStore": [
+        "/",
+        "/index.html"
+      ],
+      "whiteList": [
+        ".*\\..*",
+        "/login"
+      ]
+    }
+  ]
+}
+
+###

@@ -17,6 +17,8 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkus:quarkus-reactive-routes")
 
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
+
     testImplementation("io.quarkus:quarkus-junit5")
 }
 

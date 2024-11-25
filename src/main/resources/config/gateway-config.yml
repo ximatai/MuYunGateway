@@ -1,0 +1,36 @@
+---
+gateway:
+  port: 7070
+  index: "/"
+  ssl:
+    use: false
+    cert-path: null
+    key-path: null
+  login:
+    page: "/web/login"
+    api: null
+  jwt:
+    use: false
+    check-expiration: false
+    expires-min: null
+  session:
+    use: false
+    timeout-hour: null
+  redirects:
+  - from: "/"
+    to: "/web/"
+  white-referer:
+  - "login"
+  frontends:
+  - path: "web"
+    dir: "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot"
+    not-found-reroute: "/"
+    protect: true
+    regex: false
+    comment: null
+    no-store:
+    - "/"
+    - "/index.html"
+    white-list:
+    - ".*\\..*"
+    - "/login"
