@@ -5,19 +5,15 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
-import java.util.Set;
+import java.util.List;
 
 public abstract class BaseRoute implements Handler<RoutingContext> {
 
     protected String path;
-    protected boolean isProtect;
-    protected boolean isRegex;
-    protected Set<String> whitelist;
-    protected Set<String> noStoreList;
-
-    public BaseRoute(String path) {
-        this.path = path.trim();
-    }
+    protected boolean protect;
+    protected boolean regex;
+    protected List<String> whitelist;
+    protected List<String> noStore;
 
     public String getPath() {
         if (path == null || path.isBlank()) {
@@ -28,24 +24,24 @@ public abstract class BaseRoute implements Handler<RoutingContext> {
     }
 
     public boolean isProtect() {
-        return isProtect;
+        return protect;
     }
 
     public boolean isRegex() {
-        return isRegex;
+        return regex;
     }
 
-    public Set<String> getWhitelist() {
+    public List<String> getWhitelist() {
         return whitelist;
     }
 
-    public Set<String> getNoStoreList() {
-        return noStoreList;
+    public List<String> getNoStore() {
+        return noStore;
     }
 
     public void mount(Router router, Handler<RoutingContext>... handler) {
         Route route;
-        if (isRegex) {
+        if (regex) {
             route = router.routeWithRegex(path);
         } else {
             route = router.route(getPath() + "*");

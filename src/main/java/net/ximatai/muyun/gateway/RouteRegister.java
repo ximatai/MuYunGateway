@@ -4,9 +4,11 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
 import net.ximatai.muyun.gateway.routes.BaseRoute;
 import net.ximatai.muyun.gateway.routes.FrontendRoute;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.ximatai.muyun.gateway.RoutingContextKeyConst.IS_REROUTE;
@@ -14,18 +16,23 @@ import static net.ximatai.muyun.gateway.RoutingContextKeyConst.REROUTE_REASON;
 
 public class RouteRegister {
 
-    FrontendRoute web = new FrontendRoute("web")
-            .setDir("/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot/")
-            .setNotFoundReroute("/");
-
-    List<BaseRoute> routes = List.of(web);
+    private Router router;
+    private List<BaseRoute> routes = new ArrayList<>();
 
     public RouteRegister(Router router) {
+        this.router = router;
+        router.errorHandler(404, this::notFoundHandler);
+    }
+
+    public void register(GatewayConfigDto config) {
+
+        config.getFrontends().forEach(frontend -> {
+            routes.add(new FrontendRoute(frontend));
+        });
+
         routes.forEach(route -> {
             route.mount(router);
         });
-
-        router.errorHandler(404, this::notFoundHandler);
     }
 
     /**

@@ -1,10 +1,10 @@
 package net.ximatai.muyun.gateway.routes;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
+import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
 
 public class FrontendRoute extends BaseRoute implements Handler<RoutingContext> {
 
@@ -12,26 +12,16 @@ public class FrontendRoute extends BaseRoute implements Handler<RoutingContext> 
     private String notFoundReroute;
     private Handler<RoutingContext> staticHandler;
 
-    public FrontendRoute(String path) {
-        super(path);
-    }
+    public FrontendRoute(GatewayConfigDto.Frontend frontend) {
+        this.path = frontend.getPath();
+        this.protect = frontend.isProtect();
+        this.regex = frontend.isRegex();
+        this.whitelist = frontend.getWhiteList();
+        this.noStore = frontend.getNoStore();
 
-    public String getDir() {
-        return dir;
-    }
+        this.dir = frontend.getDir();
+        this.notFoundReroute = frontend.getNotFoundReroute();
 
-    public FrontendRoute setDir(String dir) {
-        this.dir = dir.trim();
-        return this;
-    }
-
-    public String getNotFoundReroute() {
-        return notFoundReroute;
-    }
-
-    public FrontendRoute setNotFoundReroute(String notFoundReroute) {
-        this.notFoundReroute = notFoundReroute.trim();
-        return this;
     }
 
     public Handler<RoutingContext> getStaticHandler() {
@@ -60,7 +50,8 @@ public class FrontendRoute extends BaseRoute implements Handler<RoutingContext> 
 
     @Override
     public void handle(RoutingContext routingContext) {
-        routingContext.response().headers().remove(HttpHeaders.CONTENT_ENCODING);
+        // 只有http 服务是quarkus负责启动的时候，需要使用下面的hack代码，see https://github.com/quarkusio/quarkus/issues/44637
+        // routingContext.response().headers().remove(HttpHeaders.CONTENT_ENCODING);
         getStaticHandler().handle(routingContext);
     }
 }

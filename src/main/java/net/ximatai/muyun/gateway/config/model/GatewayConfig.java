@@ -43,7 +43,7 @@ public interface GatewayConfig {
     /**
      * Referer 白名单
      */
-    List<String> whiteReferer();
+    Optional<List<String>> whiteReferer();
 
     /**
      * 前端路径配置
@@ -93,14 +93,14 @@ public interface GatewayConfig {
 
         Optional<String> notFoundReroute();
 
-        boolean protect();
+        Optional<Boolean> protect();
 
-        boolean regex();
+        Optional<Boolean> regex();
 
         Optional<String> comment();
 
-        List<String> noStore();
+        Optional<List<String>> noStore();
 
-        List<String> whiteList();
+        Optional<List<String>> whiteList();
     }
 }

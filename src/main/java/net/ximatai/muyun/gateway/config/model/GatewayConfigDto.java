@@ -65,17 +65,17 @@ public class GatewayConfigDto implements Serializable {
         this.redirects = gatewayConfig.redirects().stream()
                 .map(r -> new Redirect(r.from(), r.to()))
                 .toList();
-        this.whiteReferer = gatewayConfig.whiteReferer();
+        this.whiteReferer = gatewayConfig.whiteReferer().orElse(List.of());
         this.frontends = gatewayConfig.frontends().stream()
                 .map(f -> new Frontend(
                         f.path(),
                         f.dir(),
                         f.notFoundReroute().orElse(null),
-                        f.protect(),
-                        f.regex(),
+                        f.protect().orElse(false),
+                        f.regex().orElse(false),
                         f.comment().orElse(null),
-                        f.noStore(),
-                        f.whiteList()
+                        f.noStore().orElse(List.of()),
+                        f.whiteList().orElse(List.of())
                 )).toList();
     }
 
