@@ -25,6 +25,16 @@ public class RouteRegister {
     }
 
     public void register(GatewayConfigDto config) {
+
+        config.getRedirects().forEach(redirect -> {
+            router.route(redirect.from())
+                    .handler(rc -> {
+                        rc.response().setStatusCode(301)
+                                .putHeader("Location", redirect.to())
+                                .end();
+                    });
+        });
+
         config.getFrontends().forEach(frontend -> {
             routes.add(frontend);
         });
