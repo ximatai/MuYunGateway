@@ -72,11 +72,11 @@ public class GatewayConfigDto implements Serializable {
                         f.path(),
                         f.dir(),
                         f.notFoundReroute().orElse(null),
-                        f.protect().orElse(false),
+                        f.secured().orElse(false),
                         f.regex().orElse(false),
                         f.comment().orElse(null),
-                        f.noStore().orElse(List.of()),
-                        f.whiteList().orElse(List.of())
+                        f.noCache().orElse(List.of()),
+                        f.allowlist().orElse(List.of())
                 )).toList();
     }
 

@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class NoStoreHandler implements Handler<RoutingContext> {
+public class NoCacheHandler implements Handler<RoutingContext> {
 
     private final String burgerPath;
-    private final List<String> noStorePaths;
+    private final List<String> noCachePaths;
 
-    public NoStoreHandler(String burgerPath, List<String> noStore) {
+    public NoCacheHandler(String burgerPath, List<String> noCache) {
         this.burgerPath = burgerPath;
-        this.noStorePaths = new ArrayList<>();
-        noStore.forEach(path -> {
+        this.noCachePaths = new ArrayList<>();
+        noCache.forEach(path -> {
             if (path != null) {
                 if (path.startsWith("/")) {
                     path = path.substring(1);
                 }
-                this.noStorePaths.add(this.burgerPath + path);
+                this.noCachePaths.add(this.burgerPath + path);
             }
         });
     }
@@ -28,7 +28,7 @@ public class NoStoreHandler implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext routingContext) {
         String path = routingContext.request().path();
-        boolean isNoStore = noStorePaths.stream()
+        boolean isNoStore = noCachePaths.stream()
                 .anyMatch(noStorePath -> noStorePath.equals(path) || Pattern.matches(noStorePath, path));
 
         if (isNoStore) {

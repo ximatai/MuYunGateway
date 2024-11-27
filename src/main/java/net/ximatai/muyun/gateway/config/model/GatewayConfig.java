@@ -50,6 +50,11 @@ public interface GatewayConfig {
      */
     List<Frontend> frontends();
 
+    /**
+     * 后端服务代理
+     */
+    List<Upstream> upstreams();
+
     // ---- 嵌套配置定义 ----
 
     interface SslConfig {
@@ -93,14 +98,36 @@ public interface GatewayConfig {
 
         Optional<String> notFoundReroute();
 
-        Optional<Boolean> protect();
+        Optional<Boolean> secured();
 
         Optional<Boolean> regex();
 
         Optional<String> comment();
 
-        Optional<List<String>> noStore();
+        Optional<List<String>> noCache();
 
-        Optional<List<String>> whiteList();
+        Optional<List<String>> allowlist();
+    }
+
+    interface Upstream {
+        String path();
+
+        Optional<Boolean> secured();
+
+        Optional<Boolean> regex();
+
+        Optional<String> comment();
+
+        Optional<List<String>> noCache();
+
+        Optional<List<String>> allowlist();
+
+        List<Backend> backends();
+    }
+
+    interface Backend {
+        String url();
+
+        Optional<Integer> weight();
     }
 }

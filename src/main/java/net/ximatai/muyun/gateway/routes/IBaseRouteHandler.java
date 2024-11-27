@@ -11,13 +11,13 @@ public interface IBaseRouteHandler extends Handler<RoutingContext> {
 
     String path();
 
-    boolean protect();
+    boolean secured();
 
     boolean regex();
 
-    List<String> whiteList();
+    List<String> allowlist();
 
-    List<String> noStore();
+    List<String> noCache();
 
     default void mountTo(Router router, Handler<RoutingContext>... handler) {
         Route route;

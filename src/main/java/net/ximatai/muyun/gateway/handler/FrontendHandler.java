@@ -9,8 +9,8 @@ import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public record FrontendHandler(String path, String dir, String notFoundReroute, boolean protect, boolean regex,
-                              String comment, List<String> noStore, List<String> whiteList)
+public record FrontendHandler(String path, String dir, String notFoundReroute, boolean secured, boolean regex,
+                              String comment, List<String> noCache, List<String> allowlist)
         implements IBaseRouteHandler {
 
     private static final ConcurrentHashMap<String, StaticHandler> STATIC_HANDLER_CACHE = new ConcurrentHashMap<>();
