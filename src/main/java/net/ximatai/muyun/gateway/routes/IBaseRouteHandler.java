@@ -7,7 +7,7 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.util.List;
 
-public interface IBaseRoute extends Handler<RoutingContext> {
+public interface IBaseRouteHandler extends Handler<RoutingContext> {
 
     String path();
 

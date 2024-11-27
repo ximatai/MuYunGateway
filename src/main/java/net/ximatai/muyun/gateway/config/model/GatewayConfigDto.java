@@ -1,7 +1,7 @@
 package net.ximatai.muyun.gateway.config.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import net.ximatai.muyun.gateway.record.Frontend;
+import net.ximatai.muyun.gateway.handler.FrontendHandler;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +16,7 @@ public class GatewayConfigDto implements Serializable {
     private final SessionConfig session;
     private final List<Redirect> redirects;
     private final List<String> whiteReferer;
-    private final List<Frontend> frontends;
+    private final List<FrontendHandler> frontends;
 
     @JsonCreator
     public GatewayConfigDto(
@@ -28,7 +28,7 @@ public class GatewayConfigDto implements Serializable {
             SessionConfig session,
             List<Redirect> redirects,
             List<String> whiteReferer,
-            List<Frontend> frontends
+            List<FrontendHandler> frontends
     ) {
         this.port = port;
         this.index = index;
@@ -68,7 +68,7 @@ public class GatewayConfigDto implements Serializable {
                 .toList();
         this.whiteReferer = gatewayConfig.whiteReferer().orElse(List.of());
         this.frontends = gatewayConfig.frontends().stream()
-                .map(f -> new Frontend(
+                .map(f -> new FrontendHandler(
                         f.path(),
                         f.dir(),
                         f.notFoundReroute().orElse(null),
@@ -113,7 +113,7 @@ public class GatewayConfigDto implements Serializable {
         return whiteReferer;
     }
 
-    public List<Frontend> getFrontends() {
+    public List<FrontendHandler> getFrontends() {
         return frontends;
     }
 

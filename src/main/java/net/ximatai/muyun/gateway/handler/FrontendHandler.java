@@ -1,17 +1,17 @@
-package net.ximatai.muyun.gateway.record;
+package net.ximatai.muyun.gateway.handler;
 
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
-import net.ximatai.muyun.gateway.routes.IBaseRoute;
+import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public record Frontend(String path, String dir, String notFoundReroute, boolean protect, boolean regex,
-                       String comment, List<String> noStore, List<String> whiteList)
-        implements IBaseRoute {
+public record FrontendHandler(String path, String dir, String notFoundReroute, boolean protect, boolean regex,
+                              String comment, List<String> noStore, List<String> whiteList)
+        implements IBaseRouteHandler {
 
     private static final ConcurrentHashMap<String, StaticHandler> STATIC_HANDLER_CACHE = new ConcurrentHashMap<>();
     private static final long MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
