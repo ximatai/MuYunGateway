@@ -49,9 +49,9 @@ public class MainApp implements QuarkusApplication {
         serverOptions.setCompressionSupported(true);
 
         GatewayConfigDto.SslConfig sslConfig = config.getSsl();
-        if (sslConfig.isUse()) {
-            String certPath = sslConfig.getCertPath();
-            String keyPath = sslConfig.getKeyPath();
+        if (sslConfig.use()) {
+            String certPath = sslConfig.certPath();
+            String keyPath = sslConfig.keyPath();
             PemKeyCertOptions pemKeyCertOptions = new PemKeyCertOptions().setCertPath(certPath).setKeyPath(keyPath);
             serverOptions.setSsl(true).setKeyCertOptions(pemKeyCertOptions);
         }

@@ -5,8 +5,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
-import net.ximatai.muyun.gateway.routes.BaseRoute;
-import net.ximatai.muyun.gateway.routes.FrontendRoute;
+import net.ximatai.muyun.gateway.routes.IBaseRoute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import static net.ximatai.muyun.gateway.RoutingContextKeyConst.REROUTE_REASON;
 public class RouteRegister {
 
     private Router router;
-    private List<BaseRoute> routes = new ArrayList<>();
+    private List<IBaseRoute> routes = new ArrayList<>();
 
     public RouteRegister(Router router) {
         this.router = router;
@@ -27,7 +26,7 @@ public class RouteRegister {
     public void register(GatewayConfigDto config) {
 
         config.getFrontends().forEach(frontend -> {
-            routes.add(new FrontendRoute(frontend));
+            routes.add(frontend);
         });
 
         routes.forEach(route -> {
@@ -46,10 +45,9 @@ public class RouteRegister {
         String path = request.path();
         boolean hit = false;
 
-        for (BaseRoute route : routes) {
-            if (route instanceof FrontendRoute frontendRoute) {
-
-                if (frontendRoute.isNotFoundReroute() && path.startsWith(frontendRoute.getPath())) {
+        for (IBaseRoute route : routes) {
+            if (route instanceof GatewayConfigDto.Frontend frontendRoute) {
+                if (frontendRoute.isNotFoundReroute() && path.startsWith(frontendRoute.burgerPath())) {
                     String reroutePath = frontendRoute.reroutePath();
                     if (!path.equals(reroutePath)) {
                         hit = true;
@@ -63,7 +61,6 @@ public class RouteRegister {
         }
 
         if (!hit) {
-//            routingContext.next();
             response
                     .setStatusCode(404)
                     .putHeader("Context-type", "text/plain")

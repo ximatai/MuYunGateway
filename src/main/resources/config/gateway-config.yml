@@ -22,7 +22,7 @@ gateway:
   white-referer:
   - "login"
   frontends:
-  - path: "web"
+  - path: "/web"
     dir: "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot"
     not-found-reroute: "/"
     protect: true

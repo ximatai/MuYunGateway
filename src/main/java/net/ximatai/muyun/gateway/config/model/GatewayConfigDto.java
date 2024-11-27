@@ -1,9 +1,15 @@
 package net.ximatai.muyun.gateway.config.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.FileSystemAccess;
+import io.vertx.ext.web.handler.StaticHandler;
+import net.ximatai.muyun.gateway.routes.IBaseRoute;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GatewayConfigDto implements Serializable {
 
@@ -117,160 +123,52 @@ public class GatewayConfigDto implements Serializable {
     }
 
     // 嵌套类定义
-    public static class SslConfig {
-        private final boolean use;
-        private final String certPath;
-        private final String keyPath;
-
-        public SslConfig(boolean use, String certPath, String keyPath) {
-            this.use = use;
-            this.certPath = certPath;
-            this.keyPath = keyPath;
-        }
-
-        public boolean isUse() {
-            return use;
-        }
-
-        public String getCertPath() {
-            return certPath;
-        }
-
-        public String getKeyPath() {
-            return keyPath;
-        }
+    public record SslConfig(boolean use, String certPath, String keyPath) {
     }
 
-    public static class LoginConfig {
-        private final String page;
-        private final String api;
-
-        public LoginConfig(String page, String api) {
-            this.page = page;
-            this.api = api;
-        }
-
-        public String getPage() {
-            return page;
-        }
-
-        public String getApi() {
-            return api;
-        }
+    public record LoginConfig(String page, String api) {
     }
 
-    public static class JwtConfig {
-        private final boolean use;
-        private final boolean checkExpiration;
-        private final Integer expiresMin;
-
-        public JwtConfig(boolean use, boolean checkExpiration, Integer expiresMin) {
-            this.use = use;
-            this.checkExpiration = checkExpiration;
-            this.expiresMin = expiresMin;
-        }
-
-        public boolean isUse() {
-            return use;
-        }
-
-        public boolean isCheckExpiration() {
-            return checkExpiration;
-        }
-
-        public Integer getExpiresMin() {
-            return expiresMin;
-        }
+    public record JwtConfig(boolean use, boolean checkExpiration, Integer expiresMin) {
     }
 
-    public static class SessionConfig {
-        private final boolean use;
-        private final Integer timeoutHour;
-
-        public SessionConfig(boolean use, Integer timeoutHour) {
-            this.use = use;
-            this.timeoutHour = timeoutHour;
-        }
-
-        public boolean isUse() {
-            return use;
-        }
-
-        public Integer getTimeoutHour() {
-            return timeoutHour;
-        }
+    public record SessionConfig(boolean use, Integer timeoutHour) {
     }
 
-    public static class Redirect {
-        private final String from;
-        private final String to;
-
-        public Redirect(String from, String to) {
-            this.from = from;
-            this.to = to;
-        }
-
-        public String getFrom() {
-            return from;
-        }
-
-        public String getTo() {
-            return to;
-        }
+    public record Redirect(String from, String to) {
     }
 
-    public static class Frontend {
-        private final String path;
-        private final String dir;
-        private final String notFoundReroute;
-        private final boolean protect;
-        private final boolean regex;
-        private final String comment;
-        private final List<String> noStore;
-        private final List<String> whiteList;
+    public record Frontend(String path, String dir, String notFoundReroute, boolean protect, boolean regex,
+                           String comment, List<String> noStore, List<String> whiteList)
+            implements IBaseRoute {
 
-        public Frontend(String path, String dir, String notFoundReroute, boolean protect,
-                        boolean regex, String comment, List<String> noStore, List<String> whiteList) {
-            this.path = path;
-            this.dir = dir;
-            this.notFoundReroute = notFoundReroute;
-            this.protect = protect;
-            this.regex = regex;
-            this.comment = comment;
-            this.noStore = noStore;
-            this.whiteList = whiteList;
+        private static final ConcurrentHashMap<String, StaticHandler> STATIC_HANDLER_CACHE = new ConcurrentHashMap<>();
+        private static final long MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+        private static final long CACHE_ENTRY_TIMEOUT = 30_000;
+
+        public Handler<RoutingContext> getStaticHandler() {
+            return STATIC_HANDLER_CACHE.computeIfAbsent(dir, key -> StaticHandler.create(FileSystemAccess.ROOT, key)
+                    .setCachingEnabled(false)
+                    .setMaxAgeSeconds(MAX_AGE_SECONDS)
+                    .setCacheEntryTimeout(CACHE_ENTRY_TIMEOUT)
+                    .setFilesReadOnly(false));
         }
 
-        public String getPath() {
-            return path;
+        @Override
+        public void handle(RoutingContext routingContext) {
+            getStaticHandler().handle(routingContext);
         }
 
-        public String getDir() {
-            return dir;
+        public boolean isNotFoundReroute() {
+            return notFoundReroute != null && !notFoundReroute.isBlank();
         }
 
-        public String getNotFoundReroute() {
-            return notFoundReroute;
-        }
-
-        public boolean isProtect() {
-            return protect;
-        }
-
-        public boolean isRegex() {
-            return regex;
-        }
-
-        public String getComment() {
-            return comment;
-        }
-
-        public List<String> getNoStore() {
-            return noStore;
-        }
-
-        public List<String> getWhiteList() {
-            return whiteList;
+        public String reroutePath() {
+            if (notFoundReroute.startsWith("/")) {
+                return burgerPath() + notFoundReroute.substring(1);
+            } else {
+                return burgerPath() + notFoundReroute;
+            }
         }
     }
 }
