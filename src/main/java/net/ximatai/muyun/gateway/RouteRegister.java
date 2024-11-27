@@ -5,6 +5,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
+import net.ximatai.muyun.gateway.record.Frontend;
 import net.ximatai.muyun.gateway.routes.IBaseRoute;
 
 import java.util.ArrayList;
@@ -24,13 +25,12 @@ public class RouteRegister {
     }
 
     public void register(GatewayConfigDto config) {
-
         config.getFrontends().forEach(frontend -> {
             routes.add(frontend);
         });
 
         routes.forEach(route -> {
-            route.mount(router);
+            route.mountTo(router);
         });
     }
 
@@ -46,7 +46,7 @@ public class RouteRegister {
         boolean hit = false;
 
         for (IBaseRoute route : routes) {
-            if (route instanceof GatewayConfigDto.Frontend frontendRoute) {
+            if (route instanceof Frontend frontendRoute) {
                 if (frontendRoute.isNotFoundReroute() && path.startsWith(frontendRoute.burgerPath())) {
                     String reroutePath = frontendRoute.reroutePath();
                     if (!path.equals(reroutePath)) {

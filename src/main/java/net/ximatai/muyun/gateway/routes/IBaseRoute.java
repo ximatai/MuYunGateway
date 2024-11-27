@@ -19,7 +19,7 @@ public interface IBaseRoute extends Handler<RoutingContext> {
 
     List<String> noStore();
 
-    default void mount(Router router, Handler<RoutingContext>... handler) {
+    default void mountTo(Router router, Handler<RoutingContext>... handler) {
         Route route;
         if (regex()) {
             route = router.routeWithRegex(path());
