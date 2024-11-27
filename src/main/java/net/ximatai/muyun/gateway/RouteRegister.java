@@ -6,6 +6,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
+import net.ximatai.muyun.gateway.handler.NoStoreHandler;
 import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class RouteRegister {
         });
 
         routes.forEach(route -> {
-            route.mountTo(router);
+            NoStoreHandler noStoreHandler = new NoStoreHandler(route.burgerPath(), route.noStore());
+            route.mountTo(router, noStoreHandler);
         });
     }
 
