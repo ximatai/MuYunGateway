@@ -85,6 +85,8 @@ public class GatewayServer {
                 .handler(BodyHandler.create())
                 .handler(LoginHandler.create(vertx, config.getLogin().api()));
 
+        router.route("/logout").handler(this::logoutHandler);
+
         config.getRedirects().forEach(redirect -> {
             router.route(redirect.from())
                     .handler(rc -> {
@@ -120,6 +122,14 @@ public class GatewayServer {
                     });
         }
 
+    }
+
+    private void logoutHandler(RoutingContext routingContext) {
+        routingContext.session().destroy();
+        routingContext.response()
+                .setStatusCode(302)
+                .putHeader("Location", gatewayConfig.getIndex())
+                .end();
     }
 
     private void indexHandler(RoutingContext routingContext) {
