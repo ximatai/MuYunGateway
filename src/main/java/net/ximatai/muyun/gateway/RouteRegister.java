@@ -40,6 +40,10 @@ public class RouteRegister {
             routes.add(frontend);
         });
 
+        config.getUpstreams().forEach(upstream -> {
+            routes.add(upstream);
+        });
+
         routes.forEach(route -> {
             NoCacheHandler noCacheHandler = new NoCacheHandler(route.burgerPath(), route.noCache());
             route.mountTo(router, noCacheHandler);

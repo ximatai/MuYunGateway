@@ -13,7 +13,10 @@ import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public record UpstreamHandler(String path, boolean secured, boolean regex, String comment, List<String> noCache,
                               List<String> allowlist, List<Backend> backends) implements IBaseRouteHandler {
@@ -29,6 +32,22 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
         }
     }
 
+    private Backend getOnlineBackend() {
+        List<Backend> onlineList = backends.stream().filter(Backend::isOnline).toList();
+        if (onlineList.isEmpty()) {
+            throw new RuntimeException("No online backend available @ %s".formatted(path));
+        }
+
+        List<Backend> swap = new ArrayList<>();
+
+        // 按权重展开 swap list，之后从里面随机一个即可
+        onlineList.forEach(backend ->
+                swap.addAll(Collections.nCopies(backend.getWeight(), backend))
+        );
+
+        return swap.get(ThreadLocalRandom.current().nextInt(swap.size()));
+    }
+
     @Override
     public void handle(RoutingContext routingContext) {
         HttpServerRequest req = routingContext.request();
@@ -37,13 +56,11 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
 
         req.pause();
 
-        Backend backend = backends.getFirst();
-
+        Backend backend = getOnlineBackend();
         String uri = req.uri().replaceFirst(path, backend.path());
         HttpClient backendClient = backend.getClient(vertx);
 
-        String upgrade = req.getHeader("Upgrade");
-        if ("websocket".equalsIgnoreCase(upgrade)) {
+        if (req.headers().contains("Upgrade", "websocket", true)) {
             Future<ServerWebSocket> fut = req.toWebSocket();
             fut.onSuccess(ws -> {
                 WebSocketConnectOptions webSocketConnectOptions = new WebSocketConnectOptions();
@@ -93,7 +110,7 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
         }
     }
 
-    void error(HttpServerResponse resp, Throwable err) {
+    private void error(HttpServerResponse resp, Throwable err) {
         logger.error(err.getMessage(), err);
         resp.setStatusCode(500).end(err.getMessage());
     }

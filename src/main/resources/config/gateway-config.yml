@@ -23,7 +23,7 @@ gateway:
   - "login"
   frontends:
   - path: "/web"
-    dir: "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot"
+    dir: "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist"
     not-found-reroute: true
     secured: true
     regex: false
@@ -42,7 +42,7 @@ gateway:
     no-cache: []
     allowlist: []
     backends:
-    - url: "http://127.0.0.1:8090/api/"
+    - url: "http://127.0.0.1:8080/api/"
       weight: 1
-    - url: "http://127.0.0.1:8091/api/"
+    - url: "http://127.0.0.1:8080/api/"
       weight: 1
