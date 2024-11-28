@@ -37,19 +37,39 @@ Content-Type: application/json
   ],
   "frontends": [
     {
-      "path": "web",
+      "path": "/web",
       "dir": "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot",
-      "notFoundReroute": "/",
-      "protect": true,
+      "notFoundReroute": true,
+      "secured": true,
       "regex": false,
       "comment": null,
-      "noStore": [
+      "noCache": [
         "/",
         "/index.html"
       ],
-      "whiteList": [
+      "allowlist": [
         ".*\\..*",
         "/login"
+      ]
+    }
+  ],
+  "upstreams": [
+    {
+      "path": "/api",
+      "secured": true,
+      "regex": false,
+      "comment": null,
+      "noCache": [],
+      "allowlist": [],
+      "backends": [
+        {
+          "url": "http://127.0.0.1:8090/api/",
+          "weight": 1
+        },
+        {
+          "url": "http://127.0.0.1:8091/api/",
+          "weight": 1
+        }
       ]
     }
   ]

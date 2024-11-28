@@ -24,7 +24,7 @@ public interface IBaseRouteHandler extends Handler<RoutingContext> {
         if (regex()) {
             route = router.routeWithRegex(path());
         } else {
-            route = router.route(burgerPath() + "*");
+            route = router.route(routePath());
         }
         for (Handler<RoutingContext> routingContextHandler : handler) {
             route.handler(routingContextHandler);
@@ -32,9 +32,16 @@ public interface IBaseRouteHandler extends Handler<RoutingContext> {
         route.handler(this);
     }
 
+    default String routePath() {
+        return burgerPath() + "*";
+    }
+
     default String burgerPath() {
         String path = path();
-        if (!path.startsWith("/")) path = "/" + path;
+        if (!path.startsWith("/")) {
+            throw new IllegalArgumentException("path :%s must start with '/'".formatted(path));
+        }
+
         if (!path.endsWith("/")) path = path + "/";
 
         return path;

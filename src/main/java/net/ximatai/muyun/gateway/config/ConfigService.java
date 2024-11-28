@@ -37,7 +37,6 @@ public class ConfigService {
     @PostConstruct
     void init() throws JsonProcessingException {
         logger.info("Loading config file: {}", configFilePath);
-
         logger.info("Config content is:\n {}", objectMapper.writeValueAsString(loadConfig()));
     }
 

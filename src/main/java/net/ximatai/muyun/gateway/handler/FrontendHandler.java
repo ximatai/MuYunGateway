@@ -17,7 +17,7 @@ public record FrontendHandler(String path, String dir, String notFoundReroute, b
     private static final long MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
     private static final long CACHE_ENTRY_TIMEOUT = 30_000;
 
-    public Handler<RoutingContext> getStaticHandler() {
+    private Handler<RoutingContext> getStaticHandler() {
         return STATIC_HANDLER_CACHE.computeIfAbsent(dir, key -> StaticHandler.create(FileSystemAccess.ROOT, key)
                 .setCachingEnabled(false)
                 .setMaxAgeSeconds(MAX_AGE_SECONDS)
