@@ -16,6 +16,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
+import net.ximatai.muyun.gateway.handler.AuthHandler;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
 import net.ximatai.muyun.gateway.handler.LoginHandler;
 import net.ximatai.muyun.gateway.handler.NoCacheHandler;
@@ -103,7 +104,7 @@ public class GatewayServer {
 
         routes.forEach(route -> {
             NoCacheHandler noCacheHandler = new NoCacheHandler(route.burgerPath(), route.noCache());
-            route.mountTo(router, noCacheHandler);
+            route.mountTo(router, new AuthHandler(), noCacheHandler);
         });
 
         router.errorHandler(404, this::notFoundHandler);

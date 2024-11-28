@@ -1,6 +1,7 @@
 package net.ximatai.muyun.gateway.handler;
 
 import io.vertx.core.Future;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
@@ -8,7 +9,9 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.http.WebSocketConnectOptions;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+import net.ximatai.muyun.gateway.RoutingContextKeyConst;
 import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +96,13 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
             backendClient.request(req.method(), uri, ar -> {
                 if (ar.succeeded()) {
                     HttpClientRequest reqUpstream = ar.result();
-                    reqUpstream.headers().setAll(req.headers().remove("host"));
+                    MultiMap headers = reqUpstream.headers();
+                    headers.setAll(req.headers().remove("host"));
+
+                    JsonObject user = routingContext.get(RoutingContextKeyConst.USER);
+                    if (user != null) {
+                        headers.set("gw-user", user.encode());
+                    }
 
                     reqUpstream.send(req)
                             .onSuccess(respUpstream -> {

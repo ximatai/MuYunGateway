@@ -19,6 +19,8 @@ public class LoginHandler implements Handler<RoutingContext> {
     private final String loginApi;
     private final WebClient webClient;
 
+    public static final String USER_SESSION = "gateway.user";
+
     private LoginHandler(Vertx vertx, String api) {
         this.loginApi = api;
 
@@ -54,7 +56,7 @@ public class LoginHandler implements Handler<RoutingContext> {
                 .onSuccess(event -> {
                     if (event.statusCode() == 200) {
                         JsonObject user = event.bodyAsJsonObject();
-                        session.put("gateway.user", user);
+                        session.put(USER_SESSION, user);
                         response
                                 .putHeader("content-type", "application/json")
                                 .send(user.encode());
