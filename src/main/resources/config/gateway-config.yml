@@ -1,14 +1,14 @@
 ---
 gateway:
   port: 7070
-  index: "/"
+  index: "/web/"
   ssl:
     use: false
     cert-path: null
     key-path: null
   login:
     page: "/web/login"
-    api: null
+    api: "http://127.0.0.1:8080/api/sso/login"
   jwt:
     use: false
     check-expiration: false
@@ -17,8 +17,6 @@ gateway:
     use: false
     timeout-hour: null
   redirects:
-  - from: "/"
-    to: "/web/"
   white-referer:
   - "login"
   frontends:
@@ -42,7 +40,5 @@ gateway:
     no-cache: []
     allowlist: []
     backends:
-    - url: "http://127.0.0.1:8080/api/"
-      weight: 1
     - url: "http://127.0.0.1:8080/api/"
       weight: 1

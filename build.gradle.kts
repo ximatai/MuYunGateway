@@ -16,6 +16,7 @@ dependencies {
     implementation("io.quarkus:quarkus-config-yaml")
     implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkus:quarkus-reactive-routes")
+    implementation("io.vertx:vertx-web-client")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
 

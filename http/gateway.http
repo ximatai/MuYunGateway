@@ -38,7 +38,7 @@ Content-Type: application/json
   "frontends": [
     {
       "path": "/web",
-      "dir": "/Users/aruis/develop/workspace-github/MuYunGateway/src/test/resources/webroot",
+      "dir": "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist",
       "notFoundReroute": true,
       "secured": true,
       "regex": false,
@@ -63,16 +63,24 @@ Content-Type: application/json
       "allowlist": [],
       "backends": [
         {
-          "url": "http://127.0.0.1:8090/api/",
-          "weight": 1
-        },
-        {
-          "url": "http://127.0.0.1:8091/api/",
+          "url": "http://127.0.0.1:8080/api/",
           "weight": 1
         }
       ]
     }
   ]
+}
+
+###
+POST http://127.0.0.1:7070/login
+Content-Type: application/json
+User-Agent: test
+
+{
+  "username": "admin",
+  "password": "admin@bsy",
+  "code": "muyun",
+  "uuid": "12794fa0-931d-47b0-85db-76ed1a641177"
 }
 
 ###

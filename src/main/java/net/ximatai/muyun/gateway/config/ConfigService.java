@@ -8,6 +8,7 @@ import io.quarkus.runtime.Startup;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.gateway.GatewayServer;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -30,6 +31,9 @@ public class ConfigService {
 
     @Inject
     GatewayConfig gatewayConfig;
+
+    @Inject
+    GatewayServer gatewayServer;
 
     @ConfigProperty(name = "quarkus.config.locations")
     String configFilePath;
@@ -65,7 +69,7 @@ public class ConfigService {
      * 更新内存中的配置并同步到文件
      */
     public synchronized void updateConfig(GatewayConfigDto newConfig) throws IOException {
-        // TODO: 执行业务逻辑更新
+        gatewayServer.register(newConfig);
         writeConfigToFile(newConfig);
     }
 

@@ -4,11 +4,6 @@ import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.annotations.QuarkusMain;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.net.PemKeyCertOptions;
-import io.vertx.ext.web.Router;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.config.ConfigService;
@@ -24,38 +19,12 @@ public class MainApp implements QuarkusApplication {
     @Inject
     ConfigService configService;
 
-    void init(@Observes StartupEvent startupEvent, Vertx vertx) {
+    @Inject
+    GatewayServer gatewayServer;
+
+    void init(@Observes StartupEvent startupEvent) {
         GatewayConfigDto config = configService.loadConfig();
-        int port = config.getPort();
-
-        Router router = Router.router(vertx);
-
-        new RouteRegister(router).register(config);
-
-        HttpServer server = vertx.createHttpServer(getServerOptions(config));
-        server.requestHandler(router).listen(port)
-                .onSuccess(it -> {
-                    logger.info("MuYunGateway-Proxy running on port {}", port);
-                })
-                .onFailure(event -> {
-                    logger.error("MuYunGateway startup failed", event);
-                });
-
-    }
-
-    private HttpServerOptions getServerOptions(GatewayConfigDto config) {
-        HttpServerOptions serverOptions = new HttpServerOptions();
-        serverOptions.setMaxHeaderSize(64 * 1024);
-        serverOptions.setCompressionSupported(true);
-
-        GatewayConfigDto.SslConfig sslConfig = config.getSsl();
-        if (sslConfig.use()) {
-            String certPath = sslConfig.certPath();
-            String keyPath = sslConfig.keyPath();
-            PemKeyCertOptions pemKeyCertOptions = new PemKeyCertOptions().setCertPath(certPath).setKeyPath(keyPath);
-            serverOptions.setSsl(true).setKeyCertOptions(pemKeyCertOptions);
-        }
-        return serverOptions;
+        gatewayServer.register(config);
     }
 
     @Override
