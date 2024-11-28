@@ -35,7 +35,7 @@ public class MainApp implements QuarkusApplication {
         HttpServer server = vertx.createHttpServer(getServerOptions(config));
         server.requestHandler(router).listen(port)
                 .onSuccess(it -> {
-                    logger.info("MuYunGateway running on {}", port);
+                    logger.info("MuYunGateway-Proxy running on port {}", port);
                 })
                 .onFailure(event -> {
                     logger.error("MuYunGateway startup failed", event);
@@ -60,7 +60,7 @@ public class MainApp implements QuarkusApplication {
 
     @Override
     public int run(String... args) {
-        logger.info("Starting up...");
+        logger.info("Startup successful.");
         Quarkus.waitForExit();
         return 0;
     }
