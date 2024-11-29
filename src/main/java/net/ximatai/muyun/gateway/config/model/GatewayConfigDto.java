@@ -56,6 +56,7 @@ public class GatewayConfigDto implements Serializable {
                 gatewayConfig.ssl().keyPath().orElse(null)
         );
         this.login = new LoginConfig(
+                gatewayConfig.login().path().orElse("/login"),
                 gatewayConfig.login().page(),
                 gatewayConfig.login().api().orElse(null)
         );
@@ -140,7 +141,7 @@ public class GatewayConfigDto implements Serializable {
     public record SslConfig(boolean use, String certPath, String keyPath) {
     }
 
-    public record LoginConfig(String page, String api) {
+    public record LoginConfig(String path, String page, String api) {
     }
 
     public record JwtConfig(boolean use, boolean checkExpiration, Integer expiresMin) {

@@ -7,6 +7,7 @@ gateway:
     cert-path: null
     key-path: null
   login:
+    path: "/api/sso/login"
     page: "/web/login"
     api: "http://127.0.0.1:8080/api/sso/login"
   jwt:

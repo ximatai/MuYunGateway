@@ -68,6 +68,8 @@ public interface GatewayConfig {
     interface LoginConfig {
         String page();
 
+        Optional<String> path();
+
         Optional<String> api();
     }
 

@@ -81,7 +81,7 @@ public class GatewayServer {
         router.route().handler(sessionHandler);
 
         router.route("/").handler(this::indexHandler);
-        router.route("/login")
+        router.route(config.getLogin().path())
                 .handler(BodyHandler.create())
                 .handler(LoginHandler.create(vertx, config.getLogin().api()));
 
