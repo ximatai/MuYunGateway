@@ -7,7 +7,7 @@ import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.config.ConfigService;
-import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
+import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class MainApp implements QuarkusApplication {
     GatewayServer gatewayServer;
 
     void init(@Observes StartupEvent startupEvent) {
-        GatewayConfigDto config = configService.loadConfig();
+        GatewayConfig config = configService.loadConfig();
         gatewayServer.register(config);
     }
 

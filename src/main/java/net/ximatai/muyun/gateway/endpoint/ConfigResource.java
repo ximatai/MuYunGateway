@@ -8,7 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import net.ximatai.muyun.gateway.config.ConfigService;
-import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
+import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ public class ConfigResource {
      * 获取当前配置
      */
     @GET
-    public GatewayConfigDto getConfig() {
+    public GatewayConfig getConfig() {
         return configService.loadConfig();
     }
 
@@ -32,7 +32,7 @@ public class ConfigResource {
      * 更新配置
      */
     @POST
-    public boolean updateConfig(GatewayConfigDto newConfig) {
+    public boolean updateConfig(GatewayConfig newConfig) {
         try {
             configService.updateConfig(newConfig);
             return true;

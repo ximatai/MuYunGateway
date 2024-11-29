@@ -7,15 +7,16 @@ Content-Type: application/json
 
 {
   "port": 7070,
-  "index": "/",
+  "index": "/web/",
   "ssl": {
     "use": false,
     "certPath": null,
     "keyPath": null
   },
   "login": {
+    "path": "/api/sso/login",
     "page": "/web/login",
-    "api": null
+    "api": "http://127.0.0.1:8080/api/sso/login"
   },
   "jwt": {
     "use": false,
@@ -26,12 +27,7 @@ Content-Type: application/json
     "use": false,
     "timeoutHour": null
   },
-  "redirects": [
-    {
-      "from": "/",
-      "to": "/web/"
-    }
-  ],
+  "redirects": [],
   "whiteReferer": [
     "login"
   ],
@@ -72,7 +68,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:7070/login
+POST http://127.0.0.1:7070/api/sso/login
 Content-Type: application/json
 User-Agent: test
 

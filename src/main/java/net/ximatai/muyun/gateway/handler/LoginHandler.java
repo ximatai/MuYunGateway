@@ -7,22 +7,24 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.Session;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LoginHandler implements Handler<RoutingContext> {
     private final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
+    private final GatewayConfig gatewayConfig;
     private final String loginApi;
     private final WebClient webClient;
 
     public static final String USER_SESSION = "gateway.user";
 
-    private LoginHandler(Vertx vertx, String api) {
-        this.loginApi = api;
+    public LoginHandler(GatewayConfig gatewayConfig, Vertx vertx) {
+        this.gatewayConfig = gatewayConfig;
+        this.loginApi = gatewayConfig.getLogin().api();
 
         WebClientOptions options = new WebClientOptions()
                 .setIdleTimeout(10)
@@ -31,15 +33,10 @@ public class LoginHandler implements Handler<RoutingContext> {
         webClient = WebClient.create(vertx, options);
     }
 
-    public static LoginHandler create(Vertx vertx, String api) {
-        return new LoginHandler(vertx, api);
-    }
-
     @Override
     public void handle(RoutingContext routingContext) {
         HttpServerRequest request = routingContext.request();
         HttpServerResponse response = routingContext.response();
-        Session session = routingContext.session();
 
         MultiMap headers = request.headers();
         String host = request.remoteAddress().host();
@@ -55,7 +52,11 @@ public class LoginHandler implements Handler<RoutingContext> {
                 .onSuccess(event -> {
                     if (event.statusCode() == 200) {
                         JsonObject user = event.bodyAsJsonObject();
-                        session.put(USER_SESSION, user);
+
+                        if (gatewayConfig.getSession().use()) {
+                            routingContext.session().put(USER_SESSION, user);
+                        }
+
                         response
                                 .putHeader("content-type", "application/json")
                                 .send(user.encode());

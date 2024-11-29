@@ -15,7 +15,7 @@ import io.vertx.ext.web.sstore.SessionStore;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
+import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import net.ximatai.muyun.gateway.handler.AuthHandler;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
 import net.ximatai.muyun.gateway.handler.LoginHandler;
@@ -41,7 +41,7 @@ public class GatewayServer {
 
     private Router router;
     private HttpServer server;
-    private GatewayConfigDto gatewayConfig;
+    private GatewayConfig gatewayConfig;
 
     private List<IBaseRouteHandler> routes = new ArrayList<>();
 
@@ -51,18 +51,14 @@ public class GatewayServer {
     @PostConstruct
     void init() {
         store = SessionStore.create(vertx);
-        sessionHandler = SessionHandler.create(store)
-                .setSessionCookieName("muyun-gateway")
-                .setCookieHttpOnlyFlag(true);
     }
 
-    public void register(GatewayConfigDto config) {
+    public void register(GatewayConfig config) {
         routes.clear();
 
         if (this.gatewayConfig != null && server != null) {
             if (config.getPort() != this.gatewayConfig.getPort()) {
                 logger.info("port changed {} -> {}", this.gatewayConfig.getPort(), config.getPort());
-//                store.clear();
                 this.stop();
             }
         }
@@ -78,12 +74,18 @@ public class GatewayServer {
         this.gatewayConfig = config;
         int port = config.getPort();
 
-        router.route().handler(sessionHandler);
+        if (config.getSession().use()) {
+            sessionHandler = SessionHandler.create(store)
+                    .setSessionCookieName("muyun-gateway")
+                    .setSessionTimeout(config.getSession().timeoutHour() * 60 * 60 * 1000)
+                    .setCookieHttpOnlyFlag(true);
+            router.route().handler(sessionHandler);
+        }
 
         router.route("/").handler(this::indexHandler);
         router.route(config.getLogin().path())
                 .handler(BodyHandler.create())
-                .handler(LoginHandler.create(vertx, config.getLogin().api()));
+                .handler(new LoginHandler(config, vertx));
 
         router.route("/logout").handler(this::logoutHandler);
 
@@ -106,7 +108,7 @@ public class GatewayServer {
 
         routes.forEach(route -> {
             NoCacheHandler noCacheHandler = new NoCacheHandler(route.burgerPath(), route.noCache());
-            route.mountTo(router, new AuthHandler(), noCacheHandler);
+            route.mountTo(router, new AuthHandler(config), noCacheHandler);
         });
 
         router.errorHandler(404, this::notFoundHandler);
@@ -178,13 +180,13 @@ public class GatewayServer {
         }
     }
 
-    private HttpServerOptions getServerOptions(GatewayConfigDto config) {
+    private HttpServerOptions getServerOptions(GatewayConfig config) {
         HttpServerOptions serverOptions = new HttpServerOptions();
         serverOptions.setMaxHeaderSize(64 * 1024);
         serverOptions.setCompressionSupported(true);
         serverOptions.setReusePort(false);
 
-        GatewayConfigDto.SslConfig sslConfig = config.getSsl();
+        GatewayConfig.SslConfig sslConfig = config.getSsl();
         if (sslConfig.use()) {
             String certPath = sslConfig.certPath();
             String keyPath = sslConfig.keyPath();
@@ -211,7 +213,7 @@ public class GatewayServer {
         }
     }
 
-    public GatewayConfigDto getGatewayConfig() {
+    public GatewayConfig getGatewayConfig() {
         return gatewayConfig;
     }
 

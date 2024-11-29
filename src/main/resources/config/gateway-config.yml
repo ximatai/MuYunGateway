@@ -11,13 +11,15 @@ gateway:
     page: "/web/login"
     api: "http://127.0.0.1:8080/api/sso/login"
   jwt:
-    use: false
+    use: true
     check-expiration: false
     expires-min: null
   session:
-    use: false
+    use: true
     timeout-hour: null
   redirects:
+    - from: /a
+      to: /b
   white-referer:
   - "login"
   frontends:

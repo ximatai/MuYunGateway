@@ -9,8 +9,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.GatewayServer;
+import net.ximatai.muyun.gateway.config.model.IGatewayConfig;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
-import net.ximatai.muyun.gateway.config.model.GatewayConfigDto;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class ConfigService {
     private final ObjectMapper objectMapper;
 
     @Inject
-    GatewayConfig gatewayConfig;
+    IGatewayConfig IGatewayConfig;
 
     @Inject
     GatewayServer gatewayServer;
@@ -60,15 +60,15 @@ public class ConfigService {
     /**
      * 加载当前配置文件内容到内存
      */
-    public GatewayConfigDto loadConfig() {
+    public GatewayConfig loadConfig() {
         // 使用 GatewayConfig 生成 DTO
-        return new GatewayConfigDto(gatewayConfig);
+        return new GatewayConfig(IGatewayConfig);
     }
 
     /**
      * 更新内存中的配置并同步到文件
      */
-    public synchronized void updateConfig(GatewayConfigDto newConfig) throws IOException {
+    public synchronized void updateConfig(GatewayConfig newConfig) throws IOException {
         gatewayServer.register(newConfig);
         writeConfigToFile(newConfig);
     }
@@ -76,7 +76,7 @@ public class ConfigService {
     /**
      * 写入配置到文件
      */
-    private void writeConfigToFile(GatewayConfigDto config) throws IOException {
+    private void writeConfigToFile(GatewayConfig config) throws IOException {
         Path path = getConfigFile();
 
         try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
