@@ -45,13 +45,12 @@ public class LoginHandler implements Handler<RoutingContext> {
         String host = request.remoteAddress().host();
         if (headers.contains("X-Forwarded-For")) host = request.getHeader("X-Forwarded-For");
         if (headers.contains("X-Real-IP")) host = request.getHeader("X-Real-IP");
-        String port = request.getHeader("gateway-client-port") != null ? request.getHeader("gateway-client-port") : String.valueOf(request.remoteAddress().port());
 
         JsonObject body = routingContext.body().asJsonObject();
         webClient.postAbs(loginApi)
                 .putHeader("X-Forwarded-For", host)
-                .putHeader("gateway-client-port", port)
                 .putHeader("User-Agent", headers.get("User-Agent"))
+                .putHeader("Cookie", headers.get("Cookie"))
                 .sendJson(body)
                 .onSuccess(event -> {
                     if (event.statusCode() == 200) {
@@ -61,17 +60,19 @@ public class LoginHandler implements Handler<RoutingContext> {
                                 .putHeader("content-type", "application/json")
                                 .send(user.encode());
                     } else {
-                        response.setStatusCode(500)
-                                .putHeader("Content-Type", "text/plain; charset=utf-8")
-                                .end(event.bodyAsBuffer());
+                        handleFailure(event.bodyAsString(), null, response);
                     }
                 })
                 .onFailure(event -> {
-                    logger.error("login api access error", event);
-                    response.setStatusCode(500)
-                            .putHeader("Content-Type", "text/plain; charset=utf-8")
-                            .end("登录接口异常，请稍后重试");
+                    handleFailure("登录接口访问出错", event, response);
                 });
 
+    }
+
+    private void handleFailure(String msg, Throwable e, HttpServerResponse response) {
+        logger.error(msg, e);
+        response.setStatusCode(500)
+                .putHeader("Content-Type", "text/plain; charset=utf-8")
+                .end(msg);
     }
 }
