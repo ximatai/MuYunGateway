@@ -19,15 +19,20 @@ Content-Type: application/json
     "api": "http://127.0.0.1:8080/api/sso/login"
   },
   "jwt": {
-    "use": false,
+    "use": true,
     "checkExpiration": false,
     "expiresMin": null
   },
   "session": {
-    "use": false,
-    "timeoutHour": null
+    "use": true,
+    "timeoutHour": 24
   },
-  "redirects": [],
+  "redirects": [
+    {
+      "from": "/api/sso/logout",
+      "to": "/logout"
+    }
+  ],
   "whiteReferer": [
     "login"
   ],
@@ -56,7 +61,9 @@ Content-Type: application/json
       "regex": false,
       "comment": null,
       "noCache": [],
-      "allowlist": [],
+      "allowlist": [
+        "/sso/kaptcha"
+      ],
       "backends": [
         {
           "url": "http://127.0.0.1:8080/api/",
@@ -65,18 +72,6 @@ Content-Type: application/json
       ]
     }
   ]
-}
-
-###
-POST http://127.0.0.1:7070/api/sso/login
-Content-Type: application/json
-User-Agent: test
-
-{
-  "username": "admin",
-  "password": "admin@bsy",
-  "code": "muyun",
-  "uuid": "12794fa0-931d-47b0-85db-76ed1a641177"
 }
 
 ###

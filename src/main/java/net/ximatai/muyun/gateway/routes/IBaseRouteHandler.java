@@ -19,14 +19,14 @@ public interface IBaseRouteHandler extends Handler<RoutingContext> {
 
     List<String> noCache();
 
-    default void mountTo(Router router, Handler<RoutingContext>... handler) {
+    default void mountTo(Router router, List<Handler<RoutingContext>> handlers) {
         Route route;
         if (regex()) {
             route = router.routeWithRegex(path());
         } else {
             route = router.route(routePath());
         }
-        for (Handler<RoutingContext> routingContextHandler : handler) {
+        for (Handler<RoutingContext> routingContextHandler : handlers) {
             route.handler(routingContextHandler);
         }
         route.handler(this);

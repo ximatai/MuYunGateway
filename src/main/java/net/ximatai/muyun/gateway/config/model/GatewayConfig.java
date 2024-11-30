@@ -17,7 +17,6 @@ public class GatewayConfig implements Serializable {
     private final JwtConfig jwt;
     private final SessionConfig session;
     private final List<Redirect> redirects;
-    private final List<String> whiteReferer;
     private final List<FrontendHandler> frontends;
     private final List<UpstreamHandler> upstreams;
 
@@ -30,7 +29,6 @@ public class GatewayConfig implements Serializable {
             JwtConfig jwt,
             SessionConfig session,
             List<Redirect> redirects,
-            List<String> whiteReferer,
             List<FrontendHandler> frontends,
             List<UpstreamHandler> upstreams
     ) {
@@ -41,7 +39,6 @@ public class GatewayConfig implements Serializable {
         this.jwt = jwt;
         this.session = session;
         this.redirects = redirects;
-        this.whiteReferer = whiteReferer;
         this.frontends = frontends;
         this.upstreams = upstreams;
     }
@@ -72,7 +69,6 @@ public class GatewayConfig implements Serializable {
         this.redirects = IGatewayConfig.redirects().stream()
                 .map(r -> new Redirect(r.from(), r.to()))
                 .toList();
-        this.whiteReferer = IGatewayConfig.whiteReferer().orElse(List.of());
         this.frontends = IGatewayConfig.frontends().stream()
                 .map(f -> new FrontendHandler(
                         f.path(),
@@ -123,10 +119,6 @@ public class GatewayConfig implements Serializable {
 
     public List<Redirect> getRedirects() {
         return redirects;
-    }
-
-    public List<String> getWhiteReferer() {
-        return whiteReferer;
     }
 
     public List<FrontendHandler> getFrontends() {

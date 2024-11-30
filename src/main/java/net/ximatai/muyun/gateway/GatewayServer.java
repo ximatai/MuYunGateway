@@ -1,5 +1,6 @@
 package net.ximatai.muyun.gateway;
 
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
@@ -16,6 +17,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
+import net.ximatai.muyun.gateway.handler.AllowListHandler;
 import net.ximatai.muyun.gateway.handler.AuthHandler;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
 import net.ximatai.muyun.gateway.handler.LoginHandler;
@@ -29,8 +31,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static net.ximatai.muyun.gateway.RoutingContextKeyConst.IS_REROUTE;
-import static net.ximatai.muyun.gateway.RoutingContextKeyConst.REROUTE_REASON;
+import static net.ximatai.muyun.gateway.RoutingContextKeyConst.*;
 
 @Singleton
 public class GatewayServer {
@@ -67,7 +68,7 @@ public class GatewayServer {
             router.getRoutes().forEach(Route::remove);
         }
 
-        if (router == null || server == null) { // 说明 stop 了，router 需要重建
+        if (router == null || server == null) { // 要么是新启动要么是 stop 了，router 需要重建
             router = Router.router(vertx);
         }
 
@@ -107,8 +108,22 @@ public class GatewayServer {
         });
 
         routes.forEach(route -> {
-            NoCacheHandler noCacheHandler = new NoCacheHandler(route.burgerPath(), route.noCache());
-            route.mountTo(router, new AuthHandler(config), noCacheHandler);
+            List<Handler<RoutingContext>> handlers = new ArrayList<>();
+            handlers.add(new NoCacheHandler(route.burgerPath(), route.noCache()));
+
+            if (route.secured()) {
+                List<String> allowList = route.allowlist().stream().map(it -> {
+                    if (it.startsWith("/")) {
+                        it = it.substring(1);
+                    }
+                    return route.burgerPath() + it;
+                }).toList();
+
+                handlers.add(new AllowListHandler(allowList));
+                handlers.add(new AuthHandler(config));
+            }
+
+            route.mountTo(router, handlers);
         });
 
         router.errorHandler(404, this::notFoundHandler);
@@ -164,7 +179,7 @@ public class GatewayServer {
                     if (!path.equals(reroutePath)) {
                         hit = true;
                         routingContext.put(IS_REROUTE, true);  //标记request 被 reroute
-                        routingContext.put(REROUTE_REASON, "frontend_router");
+                        routingContext.put(REROUTE_REASON, VAL_REROUTE_REASON_FRONTEND);
                         routingContext.reroute(reroutePath);
                     }
                 }

@@ -16,16 +16,14 @@ gateway:
     expires-min: null
   session:
     use: true
-    timeout-hour: null
+    timeout-hour: 24
   redirects:
-    - from: /a
-      to: /b
-  white-referer:
-  - "login"
+  - from: "/api/sso/logout"
+    to: "/logout"
   frontends:
   - path: "/web"
     dir: "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist"
-    not-found-reroute: true
+    not-found-reroute: "/"
     secured: true
     regex: false
     comment: null
@@ -41,7 +39,9 @@ gateway:
     regex: false
     comment: null
     no-cache: []
-    allowlist: []
+    allowlist:
+    - "/sso/kaptcha"
+    - "/platform/conf/get"
     backends:
     - url: "http://127.0.0.1:8080/api/"
       weight: 1

@@ -41,11 +41,6 @@ public interface IGatewayConfig {
     List<IRedirect> redirects();
 
     /**
-     * Referer 白名单
-     */
-    Optional<List<String>> whiteReferer();
-
-    /**
      * 前端路径配置
      */
     List<IFrontend> frontends();
