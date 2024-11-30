@@ -30,7 +30,7 @@ public record FrontendHandler(String path, String dir, String notFoundReroute, b
         getStaticHandler().handle(routingContext);
     }
 
-    public boolean isNotFoundReroute() {
+    public boolean useNotFoundReroute() {
         return notFoundReroute != null && !notFoundReroute.isBlank();
     }
 

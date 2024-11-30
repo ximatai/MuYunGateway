@@ -174,7 +174,7 @@ public class GatewayServer {
 
         for (IBaseRouteHandler route : routes) {
             if (route instanceof FrontendHandler frontendRoute) {
-                if (frontendRoute.isNotFoundReroute() && path.startsWith(frontendRoute.burgerPath())) {
+                if (frontendRoute.useNotFoundReroute() && path.startsWith(frontendRoute.burgerPath())) {
                     String reroutePath = frontendRoute.reroutePath();
                     if (!path.equals(reroutePath)) {
                         hit = true;
