@@ -34,7 +34,7 @@ gateway:
     - ".*\\..*"
     - "/login"
   upstreams:
-  - path: "/api/"
+  - path: "/api"
     secured: true
     regex: false
     comment: null

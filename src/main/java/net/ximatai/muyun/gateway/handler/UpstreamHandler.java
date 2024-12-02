@@ -60,7 +60,7 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
         req.pause();
 
         Backend backend = getOnlineBackend();
-        String uri = req.uri().replaceFirst(path, backend.path());
+        String uri = req.uri().replaceFirst(path, backend.path()).replace("//", "/");
         HttpClient backendClient = backend.getClient(vertx);
 
         if (req.headers().contains("Upgrade", "websocket", true)) {
