@@ -67,6 +67,8 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
             Future<ServerWebSocket> fut = req.toWebSocket();
             fut.onSuccess(ws -> {
                 WebSocketConnectOptions webSocketConnectOptions = new WebSocketConnectOptions();
+                webSocketConnectOptions.setHost(backend.getHost());
+                webSocketConnectOptions.setPort(backend.getPort());
                 webSocketConnectOptions.setURI(uri);
                 webSocketConnectOptions.setHeaders(
                         req.headers()

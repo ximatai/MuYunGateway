@@ -33,14 +33,11 @@ Content-Type: application/json
       "to": "/logout"
     }
   ],
-  "whiteReferer": [
-    "login"
-  ],
   "frontends": [
     {
       "path": "/web",
       "dir": "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist",
-      "notFoundReroute": true,
+      "notFoundReroute": "/",
       "secured": true,
       "regex": false,
       "comment": null,
@@ -62,7 +59,8 @@ Content-Type: application/json
       "comment": null,
       "noCache": [],
       "allowlist": [
-        "/sso/kaptcha"
+        "/sso/kaptcha",
+        "/platform/conf/get"
       ],
       "backends": [
         {

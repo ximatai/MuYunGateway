@@ -1,6 +1,6 @@
 package net.ximatai.muyun.gateway.handler;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+@JsonIncludeProperties({"url", "weight"})
 public class Backend {
     private final String url;
     private final int weight;
@@ -20,7 +21,6 @@ public class Backend {
     private Vertx vertx;
     private boolean isSSL;
 
-    @JsonIgnore
     private boolean online = true;
 
     public Backend(String url, Integer weight) {
@@ -57,6 +57,14 @@ public class Backend {
 
     public boolean isOnline() {
         return online;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     HttpClient getClient(Vertx vertx) {
