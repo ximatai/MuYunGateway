@@ -1,3 +1,8 @@
+"%test":
+  quarkus:
+    config:
+      locations: config/gateway-config.yml
+
 quarkus:
   application:
     name: MuYunGateway
