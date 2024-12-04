@@ -1,6 +1,8 @@
 package net.ximatai.muyun.gateway;
 
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
@@ -54,7 +56,8 @@ public class GatewayServer {
         store = SessionStore.create(vertx);
     }
 
-    public void register(GatewayConfig config) {
+    public Future<Integer> register(GatewayConfig config) {
+        Promise<Integer> promise = Promise.promise();
         routes.clear();
 
         if (this.gatewayConfig != null && server != null) {
@@ -132,13 +135,19 @@ public class GatewayServer {
             server = vertx.createHttpServer(getServerOptions(config));
             server.requestHandler(router).listen(port)
                     .onSuccess(it -> {
-                        logger.info("MuYunGateway-Proxy running on port {}", port);
+                        logger.info("MuYunGateway-Proxy running on port {}", it.actualPort());
+                        promise.complete(it.actualPort());
                     })
                     .onFailure(event -> {
                         logger.error("MuYunGateway startup failed", event);
+                        server = null;
+                        promise.fail(event);
                     });
+        } else {
+            return Future.succeededFuture(config.getPort());
         }
 
+        return promise.future();
     }
 
     private void logoutHandler(RoutingContext routingContext) {

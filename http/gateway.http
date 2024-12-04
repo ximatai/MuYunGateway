@@ -6,7 +6,7 @@ POST http://localhost:8888/api/config
 Content-Type: application/json
 
 {
-  "port": 7070,
+  "port": 7071,
   "index": "/web/",
   "ssl": {
     "use": false,

@@ -42,14 +42,6 @@ gateway:
     allowlist:
     - "/sso/kaptcha"
     - "/platform/conf/get"
-    - "/eventbus/.*"
     backends:
     - url: "http://127.0.0.1:8080/api/"
       weight: 1
-  - path: "/eventbus.html"
-    secured: false
-    regex: false
-    comment: null
-    backends:
-      - url: "http://127.0.0.1:8080/eventbus.html"
-        weight: 1

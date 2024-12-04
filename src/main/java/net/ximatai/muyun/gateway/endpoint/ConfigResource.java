@@ -10,7 +10,8 @@ import jakarta.ws.rs.core.MediaType;
 import net.ximatai.muyun.gateway.config.ConfigService;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 
-import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Path("/config")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,12 +33,12 @@ public class ConfigResource {
      * 更新配置
      */
     @POST
-    public boolean updateConfig(GatewayConfig newConfig) {
-        try {
-            configService.updateConfig(newConfig);
-            return true;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public int updateConfig(GatewayConfig newConfig) throws ExecutionException, InterruptedException {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        configService.updateConfig(newConfig)
+                .onSuccess(future::complete)
+                .onFailure(future::completeExceptionally);
+
+        return future.get();
     }
 }
