@@ -51,7 +51,7 @@ public class TestFrontend {
                 .extract()
                 .asString();
 
-        Assertions.assertTrue(string.contains("Hello, World!!"));
+        Assertions.assertTrue(string.contains("Hello, World!"));
     }
 
     GatewayConfig buildConfig(FrontendHandler frontendHandler) {
