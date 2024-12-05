@@ -1,5 +1,7 @@
 package net.ximatai.muyun.gateway.endpoint;
 
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -25,6 +27,7 @@ public class ConfigResource {
      * 获取当前配置
      */
     @GET
+    @RolesAllowed("admin")
     public GatewayConfig getConfig() {
         return configService.loadConfig();
     }
@@ -33,6 +36,7 @@ public class ConfigResource {
      * 更新配置
      */
     @POST
+    @RolesAllowed("admin")
     public int updateConfig(GatewayConfig newConfig) throws ExecutionException, InterruptedException {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         configService.updateConfig(newConfig)

@@ -1,8 +1,15 @@
 "%test":
+  management:
+    check-token: true
   quarkus:
     config:
       locations: config/gateway-config.yml
-
+management:
+  check-token: false
+  allowed-ips:
+    - "127.0.0.1"
+    - "localhost"
+#    - "*"
 quarkus:
   application:
     name: MuYunGateway

@@ -18,6 +18,7 @@ import io.vertx.ext.web.sstore.SessionStore;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import net.ximatai.muyun.gateway.config.Management;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import net.ximatai.muyun.gateway.handler.AllowListHandler;
 import net.ximatai.muyun.gateway.handler.AuthHandler;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -39,8 +41,13 @@ import static net.ximatai.muyun.gateway.RoutingContextKeyConst.*;
 public class GatewayServer {
     private final Logger logger = LoggerFactory.getLogger(GatewayServer.class);
 
+    public static String token;
+
     @Inject
     Vertx vertx;
+
+    @Inject
+    Management management;
 
     private Router router;
     private HttpServer server;
@@ -53,6 +60,11 @@ public class GatewayServer {
 
     @PostConstruct
     void init() {
+        if (management.checkToken()) {
+            token = UUID.randomUUID().toString().replace("-", "");
+            logger.info("Management token: {}", token);
+        }
+
         store = SessionStore.create(vertx);
     }
 

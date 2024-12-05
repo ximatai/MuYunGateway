@@ -8,13 +8,9 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.config.ConfigService;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @QuarkusMain
 public class MainApp implements QuarkusApplication {
-
-    private final Logger logger = LoggerFactory.getLogger(MainApp.class);
 
     @Inject
     ConfigService configService;
@@ -29,7 +25,6 @@ public class MainApp implements QuarkusApplication {
 
     @Override
     public int run(String... args) {
-        logger.info("Startup successful.");
         Quarkus.waitForExit();
         return 0;
     }
