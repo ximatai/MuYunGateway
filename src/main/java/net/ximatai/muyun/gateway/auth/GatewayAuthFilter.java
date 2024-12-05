@@ -11,7 +11,6 @@ import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.gateway.GatewayServer;
 import net.ximatai.muyun.gateway.config.Management;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @Provider
@@ -25,7 +24,7 @@ public class GatewayAuthFilter implements ContainerRequestFilter {
     HttpServerRequest request;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         String token = requestContext.getHeaderString("token");
         String clientIp = request.remoteAddress().hostAddress();
 
