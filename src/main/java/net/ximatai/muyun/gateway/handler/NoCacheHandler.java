@@ -33,7 +33,7 @@ public class NoCacheHandler implements Handler<RoutingContext> {
 
         if (isNoStore) {
             routingContext.response()
-                    .putHeader("cache-control", "no-cache,no-store");
+                    .putHeader("cache-control", "no-cache, no-store");
         }
         routingContext.next();
     }
