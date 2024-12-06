@@ -206,9 +206,7 @@ public class TestFrontend {
     private void registerServer(FrontendHandler frontendHandler) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         gatewayServer.register(buildConfig(frontendHandler))
-                .onComplete(event -> {
-                    completableFuture.complete(event.succeeded());
-                });
+                .onComplete(event -> completableFuture.complete(event.succeeded()));
 
         Boolean registerSuccess;
         try {
