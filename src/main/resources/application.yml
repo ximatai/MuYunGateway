@@ -1,9 +1,3 @@
-"%test":
-  management:
-    check-token: true
-  quarkus:
-    config:
-      locations: config/gateway-config.yml
 management:
   check-token: false
   allowed-ips:

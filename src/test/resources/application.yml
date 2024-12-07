@@ -1,0 +1,5 @@
+management:
+  check-token: true
+quarkus:
+  config:
+    locations: config/gateway-config.yml
