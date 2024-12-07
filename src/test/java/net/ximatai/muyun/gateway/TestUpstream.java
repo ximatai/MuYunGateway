@@ -30,17 +30,11 @@ public class TestUpstream {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         Router router = Router.router(vertx);
 
-        router.get("/").handler(routingContext -> {
-            routingContext.response().setStatusCode(200).end("Hello, World!");
-        });
+        router.get("/").handler(routingContext -> routingContext.response().setStatusCode(200).end("Hello, World!"));
 
-        router.get("/test1").handler(routingContext -> {
-            routingContext.response().setStatusCode(200).end("Hello, World! TEST1!");
-        });
+        router.get("/test1").handler(routingContext -> routingContext.response().setStatusCode(200).end("Hello, World! TEST1!"));
 
-        router.get("/test2").handler(routingContext -> {
-            routingContext.response().setStatusCode(200).end("Hello, World! TEST2!");
-        });
+        router.get("/test2").handler(routingContext -> routingContext.response().setStatusCode(200).end("Hello, World! TEST2!"));
 
         vertx.createHttpServer()
                 .requestHandler(router)
