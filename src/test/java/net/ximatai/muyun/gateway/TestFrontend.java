@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端访问 index.html 文件")
     public void testFrontend() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
 
@@ -49,6 +51,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端根路径访问")
     public void testFrontendIndex() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
 
@@ -65,6 +68,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端未找到资源时重定向到默认页面")
     public void testFrontendNotFoundReroute() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), "/", false, false, null, List.of(), List.of());
 
@@ -81,6 +85,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端未找到资源时返回 404 状态码")
     public void testFrontend404() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
 
@@ -96,6 +101,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端安全模式下访问根路径重定向到登录页面")
     public void testFrontendSecured() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, true, false, null, List.of(), List.of());
 
@@ -110,6 +116,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端安全模式下允许特定路径访问")
     public void testFrontendSecuredAllow() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, true, false, null, List.of(), List.of(
                 "/xxx",
@@ -140,6 +147,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端安全模式下 AJAX 请求返回 401 状态码")
     public void testFrontendSecuredLikeAjax() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, true, false, null, List.of(), List.of());
 
@@ -153,6 +161,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端响应压缩")
     public void testFrontendCompression() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
 
@@ -170,6 +179,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端响应不缓存根路径")
     public void testFrontendNoCache() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of("/"), List.of());
 
@@ -187,6 +197,7 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试前端响应不缓存特定路径")
     public void testFrontendNoCacheRegex() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of("/", "/test.*"), List.of());
 
