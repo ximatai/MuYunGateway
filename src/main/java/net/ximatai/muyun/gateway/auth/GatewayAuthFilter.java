@@ -10,12 +10,16 @@ import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.gateway.GatewayServer;
 import net.ximatai.muyun.gateway.config.Management;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 @Provider
 @ApplicationScoped
 public class GatewayAuthFilter implements ContainerRequestFilter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayAuthFilter.class);
 
     @Inject
     Management management;
@@ -30,12 +34,14 @@ public class GatewayAuthFilter implements ContainerRequestFilter {
 
         // 验证 IP 地址
         if (!management.allowedIps().contains("*") && !management.allowedIps().contains(clientIp)) {
+            LOGGER.warn("Unauthorized IP:{}", clientIp);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("Unauthorized IP").build());
             return;
         }
 
         if (management.checkToken() && !Objects.equals(token, GatewayServer.token)) {
+            LOGGER.warn("Invalid token:{}", token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("Invalid token").build());
             return;

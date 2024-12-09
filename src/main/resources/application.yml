@@ -12,8 +12,9 @@ quarkus:
   http:
     port: 8888
     enable-compression: true
+    non-application-root-path: /gw
   rest:
-    path: /api
+    path: /gw/api
   banner:
     path: banner.txt
   log:

@@ -11,7 +11,7 @@ public class TestSecurity {
     @Test
     public void testSecurityBad() {
         given()
-                .get("/api/config")
+                .get("/gw/api/config")
                 .then()
                 .statusCode(401);
 
@@ -22,7 +22,7 @@ public class TestSecurity {
         String token = GatewayServer.token;
         given()
                 .header("token", token)
-                .get("/api/config")
+                .get("/gw/api/config")
                 .then()
                 .statusCode(200);
     }
