@@ -9,4 +9,12 @@ export default defineConfig({
     assetsDir: 'static', // 指定静态资源存放的文件夹
     sourcemap: true, // 是否生成 sourcemap 文件
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8888/', // 后端服务器地址
+        changeOrigin: true, // 是否改变请求源
+      },
+    },
+  },
 })
