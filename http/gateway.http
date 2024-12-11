@@ -1,8 +1,8 @@
-GET http://localhost:8888/api/config
+GET http://localhost:8888/gw/api/config
 Accept: application/json
 
 ###
-POST http://localhost:8888/api/config
+POST http://localhost:8888/gw/api/config
 Content-Type: application/json
 
 {
