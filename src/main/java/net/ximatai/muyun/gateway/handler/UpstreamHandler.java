@@ -13,10 +13,13 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import net.ximatai.muyun.gateway.RoutingContextKeyConst;
 import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -103,7 +106,12 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
 
                     JsonObject user = routingContext.get(RoutingContextKeyConst.USER);
                     if (user != null) {
-                        headers.set("gw-user", user.encode());
+                        String userJson = user.encode();
+                        String userBase64 = Base64.getEncoder().encodeToString(userJson.getBytes(StandardCharsets.UTF_8));
+                        String sign = DigestUtils.md5Hex(userJson + "BSY");
+
+                        headers.set("gw-user", userBase64);
+                        headers.set("gw-user-sign", sign);
                     }
 
                     reqUpstream.send(req)

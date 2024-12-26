@@ -1,8 +1,10 @@
 [versions]
-quarkus = "3.17.2"
+quarkus = "3.17.5"
+codec = "1.17.1"
 
 [libraries]
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" }
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

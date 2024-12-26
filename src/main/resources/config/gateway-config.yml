@@ -7,7 +7,7 @@ gateway:
     cert-path: null
     key-path: null
   login:
-    path: "/api/sso/login"
+    path: "/login"
     page: "/web/login"
     api: "http://127.0.0.1:8080/api/sso/login"
   jwt:
@@ -22,7 +22,7 @@ gateway:
     to: "/logout"
   frontends:
   - path: "/web"
-    dir: "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist"
+    dir: "/Users/aruis/develop/workspace-bsy/project_keeper/dist"
     not-found-reroute: "/"
     secured: true
     regex: false
