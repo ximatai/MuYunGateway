@@ -114,6 +114,23 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
                         headers.set("gw-user-sign", sign);
                     }
 
+                    String forwarded = req.getHeader("Forwarded");
+                    String newForwarded = String.format(
+                            "for=\"%s\"; proto=%s; host=\"%s\"",
+                            req.remoteAddress().host(),  // 客户端 IP
+                            req.scheme(),                // 请求协议
+                            req.getHeader("Host")        // 请求目标主机
+                    );
+
+                    if (forwarded != null) {
+                        forwarded += ", " + newForwarded;
+                    } else {
+                        forwarded = newForwarded;
+                        headers.set("X-Forwarded-For", req.remoteAddress().host());
+                    }
+
+                    headers.set("Forwarded", forwarded);
+
                     reqUpstream.send(req)
                             .onSuccess(respUpstream -> {
                                 resp.setStatusCode(respUpstream.statusCode());

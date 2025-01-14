@@ -30,7 +30,7 @@ The application is now runnable using `java -jar build/quarkus-app/quarkus-run.j
 If you want to build an _über-jar_, execute the following command:
 
 ```shell script
-./gradlew build -Dquarkus.package.jar.type=uber-jar
+./gradlew build -Dquarkus.package.jar.type=uber-jar -x test
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.

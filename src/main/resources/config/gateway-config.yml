@@ -8,8 +8,8 @@ gateway:
     key-path: null
   login:
     path: "/login"
-    page: "/web/login"
     api: "http://127.0.0.1:8080/api/sso/login"
+    page: "/web/login.html"
   jwt:
     use: true
     check-expiration: false
