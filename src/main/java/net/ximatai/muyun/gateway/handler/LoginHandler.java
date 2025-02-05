@@ -3,9 +3,11 @@ package net.ximatai.muyun.gateway.handler;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -19,12 +21,14 @@ public class LoginHandler implements Handler<RoutingContext> {
     private final GatewayConfig gatewayConfig;
     private final String loginApi;
     private final WebClient webClient;
+    private final JWTAuth jwtAuth;
 
     public static final String USER_SESSION = "gateway.user";
 
-    public LoginHandler(GatewayConfig gatewayConfig, Vertx vertx) {
+    public LoginHandler(GatewayConfig gatewayConfig, Vertx vertx, JWTAuth jwtAuth) {
         this.gatewayConfig = gatewayConfig;
         this.loginApi = gatewayConfig.getLogin().api();
+        this.jwtAuth = jwtAuth;
 
         WebClientOptions options = new WebClientOptions()
                 .setIdleTimeout(10)
@@ -55,6 +59,11 @@ public class LoginHandler implements Handler<RoutingContext> {
 
                         if (gatewayConfig.getSession().use()) {
                             routingContext.session().put(USER_SESSION, user);
+                        }
+
+                        if (jwtAuth != null) { // 说明开启了 jwt 验证
+                            String token = jwtAuth.generateToken(user);
+                            response.putHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
                         }
 
                         response

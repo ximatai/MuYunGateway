@@ -13,35 +13,35 @@ gateway:
   jwt:
     use: true
     check-expiration: false
-    expires-min: null
+    expires-min: 60
   session:
     use: true
     timeout-hour: 24
   redirects:
-  - from: "/api/sso/logout"
-    to: "/logout"
+    - from: "/api/sso/logout"
+      to: "/logout"
   frontends:
-  - path: "/web"
-    dir: "/Users/aruis/develop/workspace-bsy/project_keeper/dist"
-    not-found-reroute: "/"
-    secured: true
-    regex: false
-    comment: null
-    no-cache:
-    - "/"
-    - "/index.html"
-    allowlist:
-    - ".*\\..*"
-    - "/login"
+    - path: "/web"
+      dir: "/Users/aruis/develop/workspace-bsy/project_keeper/dist"
+      not-found-reroute: "/"
+      secured: true
+      regex: false
+      comment: null
+      no-cache:
+        - "/"
+        - "/index.html"
+      allowlist:
+        - ".*\\..*"
+        - "/login"
   upstreams:
-  - path: "/api"
-    secured: true
-    regex: false
-    comment: null
-    no-cache: []
-    allowlist:
-    - "/sso/kaptcha"
-    - "/platform/conf/get"
-    backends:
-    - url: "http://127.0.0.1:8080/api/"
-      weight: 1
+    - path: "/api"
+      secured: true
+      regex: false
+      comment: null
+      no-cache: [ ]
+      allowlist:
+        - "/sso/kaptcha"
+        - "/platform/conf/get"
+      backends:
+        - url: "http://127.0.0.1:8080/api/"
+          weight: 1

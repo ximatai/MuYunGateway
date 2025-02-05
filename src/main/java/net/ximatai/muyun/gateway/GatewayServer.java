@@ -1,5 +1,9 @@
 package net.ximatai.muyun.gateway;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -9,6 +13,10 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.net.PemKeyCertOptions;
+import io.vertx.ext.auth.JWTOptions;
+import io.vertx.ext.auth.PubSecKeyOptions;
+import io.vertx.ext.auth.jwt.JWTAuth;
+import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -58,6 +66,11 @@ public class GatewayServer {
     private SessionStore store;
     private SessionHandler sessionHandler;
 
+    private JWTOptions jwtOption;
+    private JWTAuth jwtAuth;
+    private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory())
+            .setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
+
     @PostConstruct
     void init() {
         if (management.checkToken()) {
@@ -69,6 +82,13 @@ public class GatewayServer {
     }
 
     public Future<Integer> register(GatewayConfig config) {
+
+        try {
+            logger.info("Config content is:\n {}", objectMapper.writeValueAsString(config));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         Promise<Integer> promise = Promise.promise();
         routes.clear();
 
@@ -98,10 +118,25 @@ public class GatewayServer {
             router.route().handler(sessionHandler);
         }
 
+        GatewayConfig.JwtConfig jwtConfig = config.getJwt();
+        if (jwtConfig.use()) {
+            jwtOption = new JWTOptions()
+                    .setIgnoreExpiration(!jwtConfig.checkExpiration())
+                    .setExpiresInMinutes(jwtConfig.expiresMin());
+
+            JWTAuthOptions jwtAuthOptions = new JWTAuthOptions()
+                    .setJWTOptions(jwtOption)
+                    .addPubSecKey(new PubSecKeyOptions()
+                            .setAlgorithm("HS256")
+                            .setBuffer("MuYun"));
+
+            jwtAuth = JWTAuth.create(vertx, jwtAuthOptions);
+        }
+
         router.route("/").handler(this::indexHandler);
         router.route(config.getLogin().path())
                 .handler(BodyHandler.create())
-                .handler(new LoginHandler(config, vertx));
+                .handler(new LoginHandler(config, vertx, jwtAuth));
 
         router.route("/logout").handler(this::logoutHandler);
 
@@ -135,7 +170,7 @@ public class GatewayServer {
                 }).toList();
 
                 handlers.add(new AllowListHandler(allowList));
-                handlers.add(new AuthHandler(config));
+                handlers.add(new AuthHandler(config, jwtAuth));
             }
 
             route.mountTo(router, handlers);

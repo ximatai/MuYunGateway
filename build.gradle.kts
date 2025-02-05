@@ -18,6 +18,7 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkus:quarkus-reactive-routes")
     implementation("io.vertx:vertx-web-client")
+    implementation("io.vertx:vertx-auth-jwt")
 
     implementation(libs.commons.codes)
 
