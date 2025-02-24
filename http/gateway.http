@@ -6,7 +6,7 @@ POST http://localhost:8888/gw/api/config
 Content-Type: application/json
 
 {
-  "port": 7071,
+  "port": 7070,
   "index": "/web/",
   "ssl": {
     "use": false,
@@ -14,14 +14,14 @@ Content-Type: application/json
     "keyPath": null
   },
   "login": {
-    "path": "/api/sso/login",
-    "page": "/web/login",
+    "path": "/login",
+    "page": "/web/login.html",
     "api": "http://127.0.0.1:8080/api/sso/login"
   },
   "jwt": {
     "use": true,
     "checkExpiration": false,
-    "expiresMin": null
+    "expiresMin": 60
   },
   "session": {
     "use": true,
@@ -36,7 +36,7 @@ Content-Type: application/json
   "frontends": [
     {
       "path": "/web",
-      "dir": "/Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist",
+      "dir": "/Users/aruis/develop/workspace-bsy/project_keeper/dist",
       "notFoundReroute": "/",
       "secured": true,
       "regex": false,

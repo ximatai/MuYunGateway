@@ -1,7 +1,7 @@
 ---
 gateway:
   port: 7070
-  index: "/web/"
+  index: "/web1/"
   ssl:
     use: false
     cert-path: null

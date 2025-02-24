@@ -9,7 +9,7 @@ quarkus:
   application:
     name: MuYunGateway
   config:
-    locations: /Users/aruis/develop/workspace-github/MuYunGateway/src/main/resources/config/gateway-config.yml
+    locations: /Users/aruis/develop/workspace-github/MuYunGateway/config/gateway-config.yml
   http:
     port: 8888
     enable-compression: true

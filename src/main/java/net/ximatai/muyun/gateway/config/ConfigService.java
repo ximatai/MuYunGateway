@@ -37,6 +37,8 @@ public class ConfigService {
     @Inject
     GatewayServer gatewayServer;
 
+    private GatewayConfig gatewayConfig;
+
     @ConfigProperty(name = "quarkus.config.locations")
     String configFilePath;
 
@@ -62,8 +64,10 @@ public class ConfigService {
      * 加载当前配置文件内容到内存
      */
     public GatewayConfig loadConfig() {
-        // 使用 GatewayConfig 生成 DTO
-        return new GatewayConfig(IGatewayConfig);
+        if (gatewayConfig == null) {
+            gatewayConfig = new GatewayConfig(IGatewayConfig); // 使用 GatewayConfig 生成 DTO
+        }
+        return gatewayConfig;
     }
 
     /**
@@ -75,6 +79,7 @@ public class ConfigService {
                 .onSuccess(result -> {
                     try {
                         writeConfigToFile(newConfig);
+                        gatewayConfig = newConfig;
                         promise.complete(result);
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
