@@ -2,6 +2,7 @@ package net.ximatai.muyun.gateway;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.gateway.config.model.GatewayConfig;
@@ -26,7 +27,6 @@ public class TestUpstream {
 
     public TestUpstream() {
         Vertx vertx = Vertx.vertx();
-        boolean backendStarted;
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         Router router = Router.router(vertx);
 
@@ -36,20 +36,15 @@ public class TestUpstream {
 
         router.get("/test2").handler(routingContext -> routingContext.response().setStatusCode(200).end("Hello, World! TEST2!"));
 
-        vertx.createHttpServer()
+        HttpServer server = vertx.createHttpServer()
                 .requestHandler(router)
                 .listen(0)
-                .onComplete(event -> {
-                    port = event.result().actualPort();
-                    completableFuture.complete(event.succeeded());
-                });
-        try {
-            backendStarted = completableFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+                .toCompletionStage()
+                .toCompletableFuture()
+                .join();
 
-        Assertions.assertTrue(backendStarted);
+        port = server.actualPort();
+        Assertions.assertTrue(port > 0);
     }
 
     @Test
