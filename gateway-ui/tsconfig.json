@@ -2,6 +2,9 @@
     "files": [],
     "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
     "compilerOptions": {
-        "types": ["element-plus/global"]
+        "types": ["element-plus/global"],
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "skipLibCheck": true
     }
 }
