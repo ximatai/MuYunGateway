@@ -92,7 +92,7 @@ const emptyData: GatewayConfig = {
     ssl: { use: false, certPath: '', keyPath: '' },
     index: '',
     login: { path: '', page: '', api: '' },
-    jwt: { use: false, checkExpiration: false, expiresMin: null },
+    jwt: { use: false, checkExpiration: false, expiresHour: null },
     session: { use: false, timeoutHour: null },
     redirects: [],
     frontends: [],
@@ -124,7 +124,7 @@ const rules = computed<FormRules<GatewayConfig>>(() => {
     for (let key in dataForm.ssl) {
         rule[`ssl.${key}`] = [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
     }
-    rule[`jwt.expiresMin`] = [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+    rule[`jwt.expiresHour`] = [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
     rule[`session.timeoutHour`] = [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 
     return { ...rule, port: numberRule('端口') } as FormRules<GatewayConfig>
@@ -253,7 +253,7 @@ const handleImportError = (error: unknown) => {
 }
 // 新增类型校验工具函数
 const validateStructure = (source: any, template: any, path: string = ''): string[] => {
-    const nullableNumberFields = ['port', 'jwt.expiresMin', 'session.timeoutHour']
+    const nullableNumberFields = ['port', 'jwt.expiresHour', 'session.timeoutHour']
     const errors: string[] = []
     // 特殊处理可空数字字段
     if (nullableNumberFields.includes(path)) {
@@ -310,7 +310,7 @@ const validateStructure = (source: any, template: any, path: string = ''): strin
 // 增强版数据合并方法
 const safeMerge = (target: any, source: any, template: any): string[] => {
     const errors: string[] = []
-    const nullableNumberFields = ['port', 'jwt.expiresMin', 'session.timeoutHour']
+    const nullableNumberFields = ['port', 'jwt.expiresHour', 'session.timeoutHour']
     Object.keys(template).forEach((key) => {
         const currentValue = source[key]
         const templateValue = template[key]

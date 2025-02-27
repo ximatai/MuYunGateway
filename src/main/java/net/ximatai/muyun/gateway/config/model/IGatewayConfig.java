@@ -73,7 +73,7 @@ public interface IGatewayConfig {
 
         boolean checkExpiration();
 
-        Optional<Integer> expiresMin();
+        Optional<Integer> expiresHour();
     }
 
     interface ISessionConfig {

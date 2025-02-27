@@ -122,7 +122,7 @@ public class GatewayServer {
         if (jwtConfig.use()) {
             jwtOption = new JWTOptions()
                     .setIgnoreExpiration(!jwtConfig.checkExpiration())
-                    .setExpiresInMinutes(jwtConfig.expiresMin());
+                    .setExpiresInMinutes(jwtConfig.expiresHour() * 60);
 
             JWTAuthOptions jwtAuthOptions = new JWTAuthOptions()
                     .setJWTOptions(jwtOption)

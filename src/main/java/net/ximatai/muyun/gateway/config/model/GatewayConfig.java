@@ -60,7 +60,7 @@ public class GatewayConfig implements Serializable {
         this.jwt = new JwtConfig(
                 IGatewayConfig.jwt().use(),
                 IGatewayConfig.jwt().checkExpiration(),
-                IGatewayConfig.jwt().expiresMin().orElse(60)
+                IGatewayConfig.jwt().expiresHour().orElse(24)
         );
         this.session = new SessionConfig(
                 IGatewayConfig.session().use().orElse(true),
@@ -136,7 +136,7 @@ public class GatewayConfig implements Serializable {
     public record LoginConfig(String path, String page, String api) {
     }
 
-    public record JwtConfig(boolean use, boolean checkExpiration, Integer expiresMin) {
+    public record JwtConfig(boolean use, boolean checkExpiration, Integer expiresHour) {
     }
 
     public record SessionConfig(boolean use, Integer timeoutHour) {

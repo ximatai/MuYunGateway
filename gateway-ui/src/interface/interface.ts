@@ -14,7 +14,7 @@ interface LoginConfig {
 interface JWTConfig {
   use: boolean;
   checkExpiration: boolean;
-  expiresMin: number | null;
+  expiresHour: number | null;
 }
 
 interface SessionConfig {

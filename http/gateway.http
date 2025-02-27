@@ -21,7 +21,7 @@ Content-Type: application/json
   "jwt": {
     "use": true,
     "checkExpiration": false,
-    "expiresMin": 60
+    "expiresHour": 24
   },
   "session": {
     "use": true,

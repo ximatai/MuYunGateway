@@ -188,7 +188,7 @@
                 inactive-text="关"
             />
         </el-form-item>
-        <el-form-item prop="jwt.expiresMin" v-if="dataForm.jwt.use && dataForm.jwt.checkExpiration">
+        <el-form-item prop="jwt.expiresHour" v-if="dataForm.jwt.use && dataForm.jwt.checkExpiration">
             <template #label>
                 <div class="label-desc">
                     <span>JWT过期</span>
@@ -204,24 +204,18 @@
                 </div>
             </template>
             <el-input-number
-                v-model="dataForm.jwt.expiresMin"
+                v-model="dataForm.jwt.expiresHour"
                 controls-position="right"
                 :min="1"
                 :max="43200"
                 class="input-number"
             >
             </el-input-number>
-            <el-input
-                v-model="dataForm.jwt.expiresMin"
-                style="width: 100px; margin-left: 10px"
-                :formatter="(value: number)=>timeFormatter(value,1)"
-                disabled
-            />
         </el-form-item>
         <el-form-item>
             <template #label>
                 <div class="label-desc">
-                    <span>验证Session过期</span>
+                    <span>启用Session</span>
                     <el-tooltip
                         class="box-item"
                         effect="dark"
@@ -263,12 +257,6 @@
                 controls-position="right"
             >
             </el-input-number>
-            <el-input
-                v-model="dataForm.session.timeoutHour"
-                style="width: 100px; margin-left: 10px"
-                :formatter="(value: number)=>timeFormatter(value,2)"
-                disabled
-            />
         </el-form-item>
         <el-form-item :rules="redirectRules">
             <template #label>
@@ -332,16 +320,7 @@ const props = defineProps({
         default: () => {},
     },
 })
-// 时间格式化函数
-const timeFormatter = (value: number, index: number) => {
-    if (index == 1) {
-        const days = value / (60 * 24) // 总分钟数 ÷ 每日分钟数
-        return `${Number(days.toFixed(2))}天`
-    } else {
-        const minutesToHours = parseFloat((value / 60).toFixed(2))
-        return `${minutesToHours}小时`
-    }
-}
+
 // 追加302跳转规则
 const addAutoRedirects = () => {
     props.dataForm.redirects.push({
@@ -415,7 +394,7 @@ const redirectRules = [
         position: relative;
         &::before {
             // 也可以将此处的分钟换成其他单位
-            content: '分钟';
+            content: '小时';
             z-index: 2;
             position: absolute;
             top: 0;
