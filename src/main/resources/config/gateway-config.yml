@@ -13,7 +13,7 @@ gateway:
   jwt:
     use: true
     check-expiration: false
-    expires-min: 60
+    expires-hour: 60
   session:
     use: true
     timeout-hour: 24
