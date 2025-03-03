@@ -1,3 +1,7 @@
+GET http://localhost:7070/login
+
+###
+
 GET http://localhost:8888/gw/api/config
 Accept: application/json
 

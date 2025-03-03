@@ -134,7 +134,7 @@ public class GatewayServer {
         }
 
         router.route("/").handler(this::indexHandler);
-        router.route(config.getLogin().path())
+        router.post(config.getLogin().path())
                 .handler(BodyHandler.create())
                 .handler(new LoginHandler(config, vertx, jwtAuth));
 
