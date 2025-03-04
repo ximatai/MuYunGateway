@@ -1,6 +1,6 @@
 [versions]
-quarkus = "3.17.5"
-codec = "1.17.1"
+quarkus = "3.19.1"
+codec = "1.80.0"
 
 [libraries]
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
