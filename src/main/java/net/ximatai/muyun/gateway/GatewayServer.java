@@ -136,6 +136,10 @@ public class GatewayServer {
             jwtAuth = JWTAuth.create(vertx, jwtAuthOptions);
         }
 
+        AuthHandler authHandler = new AuthHandler(config, jwtAuth);
+        HeaderHandler headerHandler = new HeaderHandler(config);
+        router.route().handler(headerHandler);
+
         router.route("/").handler(this::indexHandler);
         router.post(config.getLogin().path())
                 .handler(BodyHandler.create())
@@ -163,7 +167,6 @@ public class GatewayServer {
         routes.forEach(route -> {
             List<Handler<RoutingContext>> handlers = new ArrayList<>();
             handlers.add(new NoCacheHandler(route.burgerPath(), route.noCache()));
-            handlers.add(new HeaderHandler(config));
 
             if (route.secured()) {
                 List<String> allowList = route.allowlist().stream().map(it -> {
@@ -174,7 +177,7 @@ public class GatewayServer {
                 }).toList();
 
                 handlers.add(new AllowListHandler(allowList));
-                handlers.add(new AuthHandler(config, jwtAuth));
+                handlers.add(authHandler);
             }
 
             route.mountTo(router, handlers);
