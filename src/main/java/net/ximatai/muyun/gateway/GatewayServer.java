@@ -8,6 +8,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.CookieSameSite;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
@@ -115,7 +116,8 @@ public class GatewayServer {
             sessionHandler = SessionHandler.create(store)
                     .setSessionCookieName("muyun-gateway")
                     .setSessionTimeout(config.getSession().timeoutHour() * 60 * 60 * 1000)
-                    .setCookieHttpOnlyFlag(true);
+                    .setCookieHttpOnlyFlag(true)
+                    .setCookieSameSite(CookieSameSite.STRICT);
             router.route().handler(sessionHandler);
         }
 
