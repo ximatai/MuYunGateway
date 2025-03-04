@@ -134,7 +134,9 @@ public record UpstreamHandler(String path, boolean secured, boolean regex, Strin
                     reqUpstream.send(req)
                             .onSuccess(respUpstream -> {
                                 resp.setStatusCode(respUpstream.statusCode());
-                                resp.headers().setAll(respUpstream.headers());
+                                respUpstream.headers().forEach(h -> {
+                                    resp.putHeader(h.getKey(), h.getValue());
+                                });
                                 resp.send(respUpstream);
                             }).onFailure(err -> {
                                 error(resp, err);

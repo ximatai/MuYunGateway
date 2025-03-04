@@ -80,6 +80,24 @@ public class TestUpstream {
     }
 
     @Test
+    public void testUpstreamHeader() {
+        UpstreamHandler upstreamHandler = new UpstreamHandler("/test", false, false, "", List.of(), List.of(), List.of(
+                new Backend("http://localhost:%s/".formatted(port), 1)
+        ));
+
+        registerServer(upstreamHandler);
+
+        String string = given()
+                .get("http://localhost:9999/test/")
+                .then()
+                .statusCode(200)
+                .extract()
+                .header("test");
+
+        Assertions.assertEquals("test", string);
+    }
+
+    @Test
     public void testUpstream404() {
         UpstreamHandler upstreamHandler = new UpstreamHandler("/test", false, false, "", List.of(), List.of(), List.of(
                 new Backend("http://localhost:%s/".formatted(port), 1)
@@ -165,7 +183,9 @@ public class TestUpstream {
                 new GatewayConfig.JwtConfig(false, false, null),
                 new GatewayConfig.SessionConfig(false, 1),
                 List.of(),
-                List.of(),
+                List.of(
+                        new GatewayConfig.Header("test", "test")
+                ),
                 List.of(),
                 List.of(
                         upstreamHandler
