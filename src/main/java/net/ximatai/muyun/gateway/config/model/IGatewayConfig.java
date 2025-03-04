@@ -41,6 +41,11 @@ public interface IGatewayConfig {
     List<IRedirect> redirects();
 
     /**
+     * 附加 header 设置
+     */
+    List<IHeaders> headers();
+
+    /**
      * 前端路径配置
      */
     List<IFrontend> frontends();
@@ -80,6 +85,12 @@ public interface IGatewayConfig {
         Optional<Boolean> use();
 
         Optional<Integer> timeoutHour();
+    }
+
+    interface IHeaders {
+        String name();
+
+        String value();
     }
 
     interface IRedirect {

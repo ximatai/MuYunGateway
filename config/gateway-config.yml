@@ -1,7 +1,7 @@
 ---
 gateway:
   port: 7070
-  index: "/web/"
+  index: "/web1/"
   ssl:
     use: false
     cert-path: null
@@ -13,13 +13,16 @@ gateway:
   jwt:
     use: true
     check-expiration: false
-    expires-hour: 24
+    expires-hour: 60
   session:
     use: true
     timeout-hour: 24
   redirects:
   - from: "/api/sso/logout"
     to: "/logout"
+  headers:
+  - name: "test"
+    value: "test"
   frontends:
   - path: "/web"
     dir: "/Users/aruis/develop/workspace-bsy/project_keeper/dist"

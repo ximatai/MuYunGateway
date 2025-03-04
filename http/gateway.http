@@ -11,7 +11,7 @@ Content-Type: application/json
 
 {
   "port": 7070,
-  "index": "/web/",
+  "index": "/web1/",
   "ssl": {
     "use": false,
     "certPath": null,
@@ -25,7 +25,7 @@ Content-Type: application/json
   "jwt": {
     "use": true,
     "checkExpiration": false,
-    "expiresHour": 24
+    "expiresHour": 60
   },
   "session": {
     "use": true,
@@ -35,6 +35,12 @@ Content-Type: application/json
     {
       "from": "/api/sso/logout",
       "to": "/logout"
+    }
+  ],
+  "headers": [
+    {
+      "name": "test",
+      "value": "test"
     }
   ],
   "frontends": [

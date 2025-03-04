@@ -166,6 +166,7 @@ public class TestUpstream {
                 new GatewayConfig.SessionConfig(false, 1),
                 List.of(),
                 List.of(),
+                List.of(),
                 List.of(
                         upstreamHandler
                 )

@@ -203,6 +203,7 @@ public class TestLogin {
                                 new GatewayConfig.SessionConfig(true, 1),
                                 List.of(),
                                 List.of(),
+                                List.of(),
                                 List.of(
                                         new UpstreamHandler("/api", true, false, "", List.of(), List.of(), List.of(
                                                 new Backend("http://localhost:%s/api/".formatted(upstreamServerPort), 1)

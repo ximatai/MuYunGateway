@@ -51,6 +51,23 @@ public class TestFrontend {
     }
 
     @Test
+    @DisplayName("测试header")
+    public void testFrontendHeader() {
+        FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
+
+        registerServer(frontendHandler);
+
+        String test = given()
+                .get("http://localhost:9999/test/index.html")
+                .then()
+                .statusCode(200)
+                .extract()
+                .header("test");
+
+        Assertions.assertTrue(test.contains("test"));
+    }
+
+    @Test
     @DisplayName("测试前端根路径访问")
     public void testFrontendIndex() {
         FrontendHandler frontendHandler = new FrontendHandler("/test", tempDirectory.toAbsolutePath().toString(), null, false, false, null, List.of(), List.of());
@@ -238,6 +255,9 @@ public class TestFrontend {
                 new GatewayConfig.JwtConfig(false, false, null),
                 new GatewayConfig.SessionConfig(false, 1),
                 List.of(),
+                List.of(
+                        new GatewayConfig.Header("test", "test")
+                ),
                 List.of(
                         frontendHandler
                 ),

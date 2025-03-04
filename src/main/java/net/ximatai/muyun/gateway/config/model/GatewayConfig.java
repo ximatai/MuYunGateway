@@ -17,6 +17,7 @@ public class GatewayConfig implements Serializable {
     private final JwtConfig jwt;
     private final SessionConfig session;
     private final List<Redirect> redirects;
+    private final List<Header> headers;
     private final List<FrontendHandler> frontends;
     private final List<UpstreamHandler> upstreams;
 
@@ -29,6 +30,7 @@ public class GatewayConfig implements Serializable {
             JwtConfig jwt,
             SessionConfig session,
             List<Redirect> redirects,
+            List<Header> headers,
             List<FrontendHandler> frontends,
             List<UpstreamHandler> upstreams
     ) {
@@ -39,6 +41,7 @@ public class GatewayConfig implements Serializable {
         this.jwt = jwt;
         this.session = session;
         this.redirects = redirects;
+        this.headers = headers;
         this.frontends = frontends;
         this.upstreams = upstreams;
     }
@@ -66,6 +69,9 @@ public class GatewayConfig implements Serializable {
                 IGatewayConfig.session().use().orElse(true),
                 IGatewayConfig.session().timeoutHour().orElse(24)
         );
+        this.headers = IGatewayConfig.headers().stream()
+                .map(r -> new Header(r.name(), r.value()))
+                .toList();
         this.redirects = IGatewayConfig.redirects().stream()
                 .map(r -> new Redirect(r.from(), r.to()))
                 .toList();
@@ -121,6 +127,10 @@ public class GatewayConfig implements Serializable {
         return redirects;
     }
 
+    public List<Header> getHeaders() {
+        return headers;
+    }
+
     public List<FrontendHandler> getFrontends() {
         return frontends;
     }
@@ -143,6 +153,10 @@ public class GatewayConfig implements Serializable {
     }
 
     public record Redirect(String from, String to) {
+    }
+
+    public record Header(String name, String value) {
+
     }
 
 }

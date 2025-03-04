@@ -31,6 +31,7 @@ import net.ximatai.muyun.gateway.config.model.GatewayConfig;
 import net.ximatai.muyun.gateway.handler.AllowListHandler;
 import net.ximatai.muyun.gateway.handler.AuthHandler;
 import net.ximatai.muyun.gateway.handler.FrontendHandler;
+import net.ximatai.muyun.gateway.handler.HeaderHandler;
 import net.ximatai.muyun.gateway.handler.LoginHandler;
 import net.ximatai.muyun.gateway.handler.NoCacheHandler;
 import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
@@ -160,6 +161,7 @@ public class GatewayServer {
         routes.forEach(route -> {
             List<Handler<RoutingContext>> handlers = new ArrayList<>();
             handlers.add(new NoCacheHandler(route.burgerPath(), route.noCache()));
+            handlers.add(new HeaderHandler(config));
 
             if (route.secured()) {
                 List<String> allowList = route.allowlist().stream().map(it -> {

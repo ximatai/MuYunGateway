@@ -20,6 +20,9 @@ gateway:
   redirects:
     - from: "/api/sso/logout"
       to: "/logout"
+  headers:
+    - name: "test"
+      value: "test"
   frontends:
     - path: "/web"
       dir: "/Users/aruis/develop/workspace-bsy/project_keeper/dist"
