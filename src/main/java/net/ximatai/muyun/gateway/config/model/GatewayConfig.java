@@ -49,15 +49,15 @@ public class GatewayConfig implements Serializable {
     // 从 GatewayConfig 转换的构造函数
     public GatewayConfig(IGatewayConfig IGatewayConfig) {
         this.port = IGatewayConfig.port();
-        this.index = IGatewayConfig.index();
+        this.index = IGatewayConfig.index().orElse("/");
         this.ssl = new SslConfig(
                 IGatewayConfig.ssl().use().orElse(false),
                 IGatewayConfig.ssl().certPath().orElse(null),
                 IGatewayConfig.ssl().keyPath().orElse(null)
         );
         this.login = new LoginConfig(
-                IGatewayConfig.login().path().orElse("/login"),
-                IGatewayConfig.login().page(),
+                IGatewayConfig.login().path().orElse(null),
+                IGatewayConfig.login().page().orElse(null),
                 IGatewayConfig.login().api().orElse(null)
         );
         this.jwt = new JwtConfig(
@@ -69,7 +69,7 @@ public class GatewayConfig implements Serializable {
                 IGatewayConfig.session().use().orElse(true),
                 IGatewayConfig.session().timeoutHour().orElse(24)
         );
-        this.headers = IGatewayConfig.headers().stream()
+        this.headers = IGatewayConfig.headers().orElse(List.of()).stream()
                 .map(r -> new Header(r.name(), r.value()))
                 .toList();
         this.redirects = IGatewayConfig.redirects().stream()

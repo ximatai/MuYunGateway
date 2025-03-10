@@ -13,7 +13,7 @@ public interface IGatewayConfig {
     /**
      * 网关的默认首页路径
      */
-    String index();
+    Optional<String> index();
 
     /**
      * SSL 配置
@@ -43,7 +43,8 @@ public interface IGatewayConfig {
     /**
      * 附加 header 设置
      */
-    List<IHeaders> headers();
+    Optional< List<IHeader>> headers();
+
 
     /**
      * 前端路径配置
@@ -66,7 +67,7 @@ public interface IGatewayConfig {
     }
 
     interface ILoginConfig {
-        String page();
+        Optional<String> page();
 
         Optional<String> path();
 
@@ -87,7 +88,7 @@ public interface IGatewayConfig {
         Optional<Integer> timeoutHour();
     }
 
-    interface IHeaders {
+    interface IHeader {
         String name();
 
         String value();

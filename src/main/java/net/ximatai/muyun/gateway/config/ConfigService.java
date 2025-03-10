@@ -1,8 +1,10 @@
 package net.ximatai.muyun.gateway.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.quarkus.runtime.Startup;
 import io.vertx.core.Future;
@@ -50,7 +52,9 @@ public class ConfigService {
     @Inject
     public ConfigService() {
         this.objectMapper = new ObjectMapper(new YAMLFactory())
-                .setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
+                .setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE)
+                .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
+//                .disable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS)
     }
 
     /**
