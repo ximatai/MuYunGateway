@@ -28,5 +28,5 @@ gateway:
     - "/"
     - "/index.html"
     allowlist:
-    - ".*\\..*"
+    - ".*\\.[a-zA-Z]+"
     - "/login"
