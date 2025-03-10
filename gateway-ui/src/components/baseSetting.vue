@@ -258,6 +258,57 @@
             >
             </el-input-number>
         </el-form-item>
+      <el-form-item :rules="headersRule">
+        <template #label>
+          <div class="label-desc">
+            <span>自定义Header</span>
+            <el-tooltip
+                class="box-item"
+                effect="dark"
+                content="追加自定义Header"
+                placement="top"
+            >
+              <el-icon class="icon" size="15"><Warning /></el-icon>
+            </el-tooltip>
+            <span>:</span>
+          </div>
+        </template>
+        <el-row v-for="(item, index) in dataForm.headers" style="margin-bottom: 20px">
+          <el-col :span="10">
+            <el-form-item
+                :prop="`headers.${index}.name`"
+                :rules="headerItemRules.name"
+                required
+            >
+              <el-input v-model="item.name" placeholder="name">
+                <template #prepend>名称</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10" style="margin-left: 5px">
+            <el-form-item
+                :prop="`headers.${index}.value`"
+                :rules="headerItemRules.value"
+                required
+            >
+              <el-input v-model="item.value" placeholder="value">
+                <template #prepend>值</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3" style="margin-left: 5px">
+            <el-button
+                @click="dataForm.headers.splice(index, 1)"
+                :icon="Minus"
+                circle
+                size="small"
+            />
+          </el-col>
+        </el-row>
+        <p class="add-btn" @click="addHeaders">
+          <el-icon> <Plus /> </el-icon>追加Header
+        </p>
+      </el-form-item>
         <el-form-item :rules="redirectRules">
             <template #label>
                 <div class="label-desc">
@@ -321,6 +372,14 @@ const props = defineProps({
     },
 })
 
+// 追加自定义header
+const addHeaders = () => {
+  props.dataForm.headers.push({
+    name: '',
+    value: '',
+  })
+}
+
 // 追加302跳转规则
 const addAutoRedirects = () => {
     props.dataForm.redirects.push({
@@ -367,6 +426,43 @@ const redirectRules = [
         },
         trigger: 'blur',
     },
+]
+
+// 单个header项的校验规则
+const headerItemRules = {
+  name: [
+    {
+      required: true,
+      message: 'Header 名称不能位空',
+      trigger: 'blur',
+    }
+  ],
+  value: [
+    {
+      required: true,
+      message: 'Header 值不能为空',
+      trigger: 'blur',
+    },
+  ],
+}
+
+// 整个headers数组的校验
+const headersRule = [
+  {
+    validator: (_: any, value: any, callback: any) => {
+      //   if (!value || value.length === 0) {
+      //     callback(new Error("至少需要一条跳转规则"));
+      //     return;
+      //   }
+      const hasEmpty = value.some((item: any) => !item.name?.trim() || !item.value?.trim())
+      if (hasEmpty) {
+        callback(new Error('Header 设置不完整'))
+      } else {
+        callback()
+      }
+    },
+    trigger: 'blur',
+  },
 ]
 </script>
 

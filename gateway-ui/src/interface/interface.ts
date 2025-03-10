@@ -27,6 +27,11 @@ interface RedirectRule {
   to: string;
 }
 
+interface Header{
+  name: string;
+  value: string;
+}
+
 interface FrontendConfig {
   path: string;
   comment: string;
@@ -62,6 +67,7 @@ export interface GatewayConfig {
   jwt: JWTConfig;
   session: SessionConfig;
   redirects: RedirectRule[];
+  headers:Header[];
   frontends: FrontendConfig[];
   upstreams: UpstreamConfig[];
 }

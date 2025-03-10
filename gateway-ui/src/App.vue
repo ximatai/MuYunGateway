@@ -95,6 +95,7 @@ const emptyData: GatewayConfig = {
     jwt: { use: false, checkExpiration: false, expiresHour: null },
     session: { use: false, timeoutHour: null },
     redirects: [],
+    headers: [],
     frontends: [],
     upstreams: [],
 }
