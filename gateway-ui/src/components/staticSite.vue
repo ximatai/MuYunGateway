@@ -153,7 +153,7 @@
                                         </div>
                                     </template>
                                     <el-input
-                                        v-model="dataForm.notFoundReroute"
+                                        v-model="element.notFoundReroute"
                                         placeholder="请输入"
                                     />
                                 </el-form-item>
