@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.quarkus.runtime.Startup;
 import io.vertx.core.Future;
@@ -61,6 +60,10 @@ public class ConfigService {
      * 获取配置文件路径
      */
     public Path getConfigFile() {
+        if (configFilePath.startsWith("file:///")) {
+            return Path.of(configFilePath.substring("file:///".length()));
+        }
+
         return Path.of(configFilePath);
     }
 
