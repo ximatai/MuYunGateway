@@ -24,7 +24,7 @@ public class Backend {
     private boolean online = true;
 
     public Backend(String url, Integer weight) {
-        this.url = url;
+        this.url = url = url.trim();
         this.weight = weight;
 
         try {
