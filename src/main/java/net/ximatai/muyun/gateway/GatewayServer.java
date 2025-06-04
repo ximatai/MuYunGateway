@@ -39,6 +39,9 @@ import net.ximatai.muyun.gateway.routes.IBaseRouteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -113,8 +116,16 @@ public class GatewayServer {
         int port = config.getPort();
 
         if (config.getSession().use()) {
+            String subfix = "";
+            try {
+                String jsonConfig = new ObjectMapper().writeValueAsString(config);
+                subfix = md5(jsonConfig).substring(0, 6);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
             sessionHandler = SessionHandler.create(store)
-                    .setSessionCookieName("muyun-gateway")
+                    .setSessionCookieName("muyun.gateway.%s".formatted(subfix))
                     .setSessionTimeout(config.getSession().timeoutHour() * 60 * 60 * 1000)
                     .setCookieHttpOnlyFlag(true)
                     .setCookieSameSite(CookieSameSite.STRICT);
@@ -298,6 +309,24 @@ public class GatewayServer {
 
     public GatewayConfig getGatewayConfig() {
         return gatewayConfig;
+    }
+
+    public static String md5(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // 将字节数组转换为十六进制字符串
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = String.format("%02x", b);
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 algorithm not found", e);
+        }
     }
 
 }

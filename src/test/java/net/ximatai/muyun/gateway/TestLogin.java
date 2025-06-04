@@ -20,12 +20,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 public class TestLogin {
@@ -83,12 +83,16 @@ public class TestLogin {
                 .extract()
                 .response();
 
-        String myCookie = response.getCookie("muyun-gateway");
+        Optional<String> gatewayCookie = response.getCookies().keySet().stream()
+                .filter(k -> k.startsWith("muyun.gateway")).findFirst();
 
-        assertNotNull(myCookie);
+        assertTrue(gatewayCookie.isPresent());
+
+        String cookieKey = gatewayCookie.get();
+        String cookieValue = response.getCookie(cookieKey);
 
         given()
-                .cookie("muyun-gateway", myCookie)
+                .cookie(cookieKey, cookieValue)
                 .get("http://127.0.0.1:9999/api/whoami")
                 .then()
                 .statusCode(200);
@@ -104,7 +108,7 @@ public class TestLogin {
                 .statusCode(200);
 
         Map user = given()
-                .cookie("muyun-gateway", myCookie + "x")
+                .cookie(cookieKey, cookieValue + "x")
                 .header("Authorization", authorization)
                 .get("http://127.0.0.1:9999/api/whoami")
                 .then()
