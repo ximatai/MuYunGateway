@@ -1,0 +1,19 @@
+stages:
+  - test
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+    - build
+
+check:
+  stage: test
+  image: eclipse-temurin:21-jdk  # 使用 OpenJDK 21（类似 Zulu JDK）
+  before_script:
+    - export GRADLE_USER_HOME=$(pwd)/.gradle
+  script:
+    - ./gradlew test
