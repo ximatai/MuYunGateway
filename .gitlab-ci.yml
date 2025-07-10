@@ -12,7 +12,9 @@ cache:
 
 check:
   stage: test
-  image: eclipse-temurin:21-jdk  # 使用 OpenJDK 21（类似 Zulu JDK）
+  image: eclipse-temurin:21-jdk
+  tags:
+    - shared  # 替换为你的 Runner 实际标签
   before_script:
     - export GRADLE_USER_HOME=$(pwd)/.gradle
   script:
