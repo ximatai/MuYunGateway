@@ -14,7 +14,7 @@ check:
   stage: test
   image: eclipse-temurin:21-jdk
   tags:
-    - shared  # 替换为你的 Runner 实际标签
+    - shared
   before_script:
     - export GRADLE_USER_HOME=$(pwd)/.gradle
   script:

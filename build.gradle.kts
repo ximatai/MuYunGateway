@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+    maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
     mavenCentral()
     mavenLocal()
 }
